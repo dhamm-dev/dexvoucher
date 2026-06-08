@@ -11,6 +11,7 @@ const Products = {
       color: '#FF6B35',
       icon: 'FF',
       logo: 'Free Fire.png',
+      banner: 'FreeFire_B.jpg',
       description: 'Top up Diamond Free Fire dengan harga termurah. Proses cepat dan aman.',
       categories: ['diamond', 'membership'],
       hasServerId: false,
@@ -21,6 +22,7 @@ const Products = {
       color: '#1E90FF',
       icon: 'ML',
       logo: 'Mobile_Legend.jpg',
+      banner: 'MobileLegend_B.jpg',
       description: 'Top up Diamond Mobile Legends termurah. Starlight Member dan Twilight Pass tersedia.',
       categories: ['diamond', 'membership', 'bundle'],
       hasServerId: true,
@@ -31,6 +33,7 @@ const Products = {
       color: '#FF4655',
       icon: 'V',
       logo: 'Valorant.png',
+      banner: 'Valorant_B.jpg',
       description: 'Top up Valorant Points (VP) dengan harga terbaik. Proses instan.',
       categories: ['voucher'],
       hasServerId: false,
@@ -41,6 +44,7 @@ const Products = {
       color: '#F5A623',
       icon: 'P',
       logo: 'PUBGM.jpg',
+      banner: 'PUBGM_B.jpg',
       description: 'Top up UC PUBG Mobile termurah. Royal Pass juga tersedia.',
       categories: ['voucher', 'membership'],
       hasServerId: false,
@@ -51,6 +55,7 @@ const Products = {
       color: '#9B59B6',
       icon: 'A',
       logo: 'AOV.png',
+      banner: 'AOV_B.jpg',
       description: 'Top up Voucher AOV dengan harga murah dan proses cepat.',
       categories: ['voucher'],
       hasServerId: true,
@@ -61,6 +66,7 @@ const Products = {
       color: '#4A9EFF',
       icon: 'G',
       logo: 'Genshin_Impact.jpg',
+      banner: 'GenshinImpact_B.jpg',
       description: 'Top up Genesis Crystal Genshin Impact. Welkin Moon tersedia.',
       categories: ['voucher'],
       hasServerId: false,
@@ -71,6 +77,7 @@ const Products = {
       color: '#C0A0FF',
       icon: 'H',
       logo: 'Honkai_Star_rail.jpg',
+      banner: 'HonkaiStarRail_B.jpg',
       description: 'Top up Oneiric Shard Honkai Star Rail dengan harga terbaik.',
       categories: ['voucher'],
       hasServerId: false,
@@ -81,6 +88,7 @@ const Products = {
       color: '#27AE60',
       icon: 'C',
       logo: 'Clash_of_clans.jpg',
+      banner: 'COC_B.jpg',
       description: 'Top up Gems Clash of Clans termurah. Gold Pass juga tersedia.',
       categories: ['voucher'],
       hasServerId: false,
@@ -114,9 +122,10 @@ const Products = {
     const header = document.getElementById('game-header');
     if (header) {
       header.innerHTML = `
-        <div class="game-banner" style="background:linear-gradient(135deg, ${game.color}, ${game.color}88)">
-          <div class="container">
-            <div class="game-header-content">
+        <div class="game-banner" style="background-image:url('../../assets/images/banners/${game.banner}');background-size:cover;background-position:center;position:relative">
+          <div class="banner-overlay" style="background:linear-gradient(135deg, ${game.color}cc, ${game.color}33)"></div>
+          <div class="container" style="position:relative;z-index:2">
+            <div class="game-header-content glass-header">
               <div class="game-header-logo" style="background:${game.color}"><img src="../../assets/images/logo/${game.logo}" alt="${game.name}" style="width:100%;height:100%;object-fit:contain;border-radius:inherit"></div>
               <div>
                 <h1 class="game-header-title">${game.name}</h1>

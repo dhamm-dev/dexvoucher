@@ -13,7 +13,6 @@ const ThemeManager = {
   init() {
     const savedTheme = Storage.get(this.KEY) || 'dark';
     this.apply(savedTheme);
-    this.setupToggleListener();
   },
 
   /**
@@ -50,7 +49,7 @@ const ThemeManager = {
   updateToggleIcon(theme) {
     const toggleBtns = document.querySelectorAll('.theme-toggle');
     toggleBtns.forEach(btn => {
-      btn.textContent = theme === 'dark' ? '\u2600' : '\uD83C\uDF19';
+      btn.classList.toggle('light', theme === 'light');
       btn.setAttribute('aria-label', `Ganti ke mode ${theme === 'dark' ? 'terang' : 'gelap'}`);
     });
   },
@@ -59,14 +58,12 @@ const ThemeManager = {
    * Pasang event listener ke semua tombol toggle tema
    */
   setupToggleListener() {
-    document.addEventListener('DOMContentLoaded', () => {
-      const toggleBtns = document.querySelectorAll('.theme-toggle');
-      const currentTheme = this.getCurrent();
-      this.updateToggleIcon(currentTheme);
+    const toggleBtns = document.querySelectorAll('.theme-toggle');
+    const currentTheme = this.getCurrent();
+    this.updateToggleIcon(currentTheme);
 
-      toggleBtns.forEach(btn => {
-        btn.addEventListener('click', () => this.toggle());
-      });
+    toggleBtns.forEach(btn => {
+      btn.addEventListener('click', () => this.toggle());
     });
   }
 };

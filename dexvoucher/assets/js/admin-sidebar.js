@@ -55,7 +55,7 @@ const AdminSidebar = {
             <span style="font-size:0.85rem;color:var(--text-muted)" id="breadcrumb">Dashboard</span>
           </div>
           <div class="flex items-center gap-md">
-            <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Ganti tema" style="font-size:1.25rem">☀️</button>
+            <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Ganti tema" title="Toggle tema"><span class="theme-toggle-knob"></span></button>
             <span style="font-size:0.85rem;color:var(--text-secondary)">${session?.name || 'Admin'}</span>
             <img src="${session?.avatar || '/dexvoucher/assets/images/avatars/default.svg'}" alt="" style="width:32px;height:32px;border-radius:50%;object-fit:cover" onerror="this.src='/dexvoucher/assets/images/avatars/default.svg'">
           </div>
@@ -80,5 +80,8 @@ const AdminSidebar = {
     if (logoutBtn) {
       logoutBtn.addEventListener('click', () => Auth.logout());
     }
+
+    // Pasang listener theme toggle
+    if (typeof ThemeManager !== 'undefined') ThemeManager.setupToggleListener();
   }
 };

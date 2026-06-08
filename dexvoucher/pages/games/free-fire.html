@@ -26,6 +26,18 @@
       overflow: hidden;
     }
     .game-header-logo img { display: block; }
+    .banner-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+    }
+    .glass-header {
+      background: rgba(0, 0, 0, 0.35);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 16px;
+      padding: 20px 24px;
+    }
     .game-header-title {
       font-size: 1.75rem;
       color: #fff;

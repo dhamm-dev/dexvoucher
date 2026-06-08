@@ -50,7 +50,7 @@ const Navbar = {
           </div>
 
           <div class="navbar-actions">
-            <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Ganti tema">☀️</button>
+            <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Ganti tema" title="Toggle tema"><span class="theme-toggle-knob"></span></button>
 
             <a href="/dexvoucher/pages/user/cart.html" class="navbar-cart" aria-label="Keranjang belanja">
               🛒
@@ -121,6 +121,9 @@ const Navbar = {
 
     // Tandai link aktif
     this._markActiveLink();
+
+    // Pasang listener theme toggle (tombol sudah ada di DOM sekarang)
+    if (typeof ThemeManager !== 'undefined') ThemeManager.setupToggleListener();
   },
 
   /** Tandai menu yang aktif berdasarkan URL */
