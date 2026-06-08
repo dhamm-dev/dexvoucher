@@ -8,7 +8,7 @@ const AdminSidebar = {
     { label: 'Dashboard', icon: '📊', href: 'dashboard-admin.html' },
     { label: 'Produk', icon: '📦', href: 'manage-products.html' },
     { label: 'Pengguna', icon: '👥', href: 'manage-users.html' },
-    { label: 'Transaksi', icon: '💰', href: 'manage-transactions.html' },
+    { label: 'Transaksi', icon: '<img class="icon-img" src="/dexvoucher/assets/images/icons/money-bag_1653705.png" alt="" style="width:16px;height:16px">', href: 'manage-transactions.html' },
     { label: 'Promo', icon: '🏷️', href: 'manage-promo.html' },
     { label: 'Laporan', icon: '📈', href: 'reports.html' },
     { label: 'Pengaturan', icon: '⚙️', href: 'settings-admin.html' }

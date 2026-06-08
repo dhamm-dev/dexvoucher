@@ -43,6 +43,7 @@
 /* ===== SPACING & TYPOGRAPHY ===== */
 :root {
   --font-main: 'Inter', 'Segoe UI', sans-serif;
+  --font-heading: 'Poppins', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
   --radius-sm: 8px;
   --radius-md: 12px;

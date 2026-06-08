@@ -144,23 +144,80 @@
 
     /* ===== Hero ===== */
     .hero {
-      padding: 140px 0 100px;
-      background: var(--gradient);
-      text-align: center;
       position: relative;
       overflow: hidden;
+      min-height: 500px;
+      max-height: 600px;
+      display: flex;
+      align-items: center;
+      /* Gambar banner sebagai background-image, posisi ke kanan agar karakter terlihat */
+      background-image: url('assets/images/banners/hero-banner.png');
+      background-size: cover;
+      background-position: right center;
+      background-repeat: no-repeat;
+      /* Fallback jika gambar belum load */
+      background-color: #0d0d0d;
+    }
+    /* Overlay gradient: kiri solid gelap (teks tidak bocor), kanan transparan (karakter kelihatan) */
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to right,
+        rgba(13,13,13,1.00) 0%,
+        rgba(13,13,13,1.00) 30%,
+        rgba(13,13,13,0.85) 50%,
+        rgba(13,13,13,0.20) 72%,
+        rgba(13,13,13,0.00) 100%
+      );
+      z-index: 1;
+    }
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      padding: 80px 0 60px;
+      text-align: left;
+      max-width: 560px;
+    }
+    .hero-content h1 {
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      line-height: 1.15;
+      margin-bottom: 16px;
+      text-shadow: 0 2px 20px rgba(0,0,0,0.5);
+    }
+    .hero-content p {
+      font-size: 1rem;
+      color: rgba(255,255,255,0.85);
+      margin-bottom: 28px;
+      max-width: 420px;
+    }
+    .hero-badge-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 28px;
+    }
+    .hero-badge {
+      background: rgba(255,255,255,0.12);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: var(--radius-full);
+      padding: 6px 14px;
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.9);
+      font-weight: 500;
     }
     .hero-game-icons {
       display: flex;
-      justify-content: center;
-      gap: 16px;
-      margin-top: 32px;
+      justify-content: flex-start;
+      gap: 12px;
+      margin-top: 24px;
       flex-wrap: wrap;
       position: relative;
     }
     .hero-game-icon {
-      width: 56px;
-      height: 56px;
+      width: 48px;
+      height: 48px;
       border-radius: var(--radius-md);
       display: flex;
       align-items: center;
@@ -170,10 +227,29 @@
       color: #fff;
       opacity: 0.9;
       transition: var(--transition);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.5);
     }
     .hero-game-icon:hover {
       opacity: 1;
       transform: scale(1.15);
+    }
+    /* Responsive hero */
+    @media (max-width: 768px) {
+      .hero {
+        background-position: 75% center;
+        min-height: 420px;
+        max-height: none;
+      }
+      .hero-content {
+        text-align: center;
+        max-width: 100%;
+      }
+      .hero-content p { max-width: 100%; }
+      .hero-overlay {
+        background: rgba(13,13,13,0.82);
+      }
+      .hero-badge-row { justify-content: center; }
+      .hero-game-icons { justify-content: center; }
     }
 
     /* ===== Cookie ===== */
@@ -220,24 +296,38 @@
   <!-- Navbar Container -->
   <div id="navbar-container"></div>
 
-  <!-- Hero Section -->
+  <!-- Hero Section: background-image via CSS, tag img dihapus agar tidak bocor -->
   <section class="hero">
+    <!-- Overlay gradient agar teks terbaca -->
+    <div class="hero-overlay"></div>
+    <!-- Partikel floating -->
     <div class="hero-particles" id="hero-particles"></div>
-    <div class="container" style="position:relative">
-      <h1 class="animate-slideUp">Top Up Game <span style="background:rgba(255,255,255,0.15);padding:0 8px;border-radius:4px">Tercepat</span> & Terpercaya</h1>
-      <p class="animate-slideUp" style="animation-delay:0.1s">Nikmati kemudahan top up game favoritmu dengan harga termurah, proses instan, dan customer service 24/7.</p>
-      <a href="#games" class="btn btn-lg" style="background:#fff;color:#6c63ff;font-weight:700;animation:slideUp 0.4s ease 0.2s both">
-        🎮 Top Up Sekarang
-      </a>
-      <div class="hero-game-icons animate-slideUp" style="animation-delay:0.3s">
-        <div class="hero-game-icon" style="background:#FF6B35"><img src="assets/images/logo/Free Fire.png" alt="Free Fire" style="width:100%;height:100%;object-fit:contain;border-radius:inherit"></div>
-        <div class="hero-game-icon" style="background:#1E90FF"><img src="assets/images/logo/Mobile_Legend.jpg" alt="Mobile Legends" style="width:100%;height:100%;object-fit:contain;border-radius:inherit"></div>
-        <div class="hero-game-icon" style="background:#FF4655"><img src="assets/images/logo/Valorant.png" alt="Valorant" style="width:100%;height:100%;object-fit:contain;border-radius:inherit"></div>
-        <div class="hero-game-icon" style="background:#F5A623"><img src="assets/images/logo/PUBGM.jpg" alt="PUBG Mobile" style="width:100%;height:100%;object-fit:contain;border-radius:inherit"></div>
-        <div class="hero-game-icon" style="background:#9B59B6"><img src="assets/images/logo/AOV.png" alt="AOV" style="width:100%;height:100%;object-fit:contain;border-radius:inherit"></div>
-        <div class="hero-game-icon" style="background:#4A9EFF"><img src="assets/images/logo/Genshin_Impact.jpg" alt="Genshin Impact" style="width:100%;height:100%;object-fit:contain;border-radius:inherit"></div>
-        <div class="hero-game-icon" style="background:#C0A0FF"><img src="assets/images/logo/Honkai_Star_rail.jpg" alt="Honkai Star Rail" style="width:100%;height:100%;object-fit:contain;border-radius:inherit"></div>
-        <div class="hero-game-icon" style="background:#27AE60"><img src="assets/images/logo/Clash_of_clans.jpg" alt="Clash of Clans" style="width:100%;height:100%;object-fit:contain;border-radius:inherit"></div>
+
+    <div class="container" style="position:relative;z-index:2">
+      <div class="hero-content animate-slideUp">
+        <h1>Top Up Game<br><span style="background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Tercepat &amp; Terpercaya</span></h1>
+        <p>Nikmati kemudahan top up game favoritmu dengan harga termurah, proses instan, dan customer service 24/7.</p>
+        <a href="#games" class="btn btn-primary btn-lg" style="font-weight:700;box-shadow:0 0 32px rgba(108,99,255,0.5)">
+          <img class="icon-img" src="assets/images/icons/video-game.png" alt="" style="width:18px;height:18px"> Top Up Sekarang
+        </a>
+        <!-- Badge keunggulan -->
+        <div class="hero-badge-row">
+          <span class="hero-badge"><img class="icon-img" src="assets/images/icons/lightning_8650972.png" alt="" style="width:16px;height:16px"> Proses Instan</span>
+          <span class="hero-badge"><img class="icon-img" src="assets/images/icons/money-bag_1653705.png" alt="" style="width:16px;height:16px"> Harga Terjangkau</span>
+          <span class="hero-badge"><img class="icon-img" src="assets/images/icons/encrypted-file.png" alt="" style="width:16px;height:16px"> Transaksi Aman</span>
+          <span class="hero-badge"><img class="icon-img" src="assets/images/icons/customer-service_12096376.png" alt="" style="width:16px;height:16px"> Support 24/7</span>
+        </div>
+        <!-- Ikon game kecil -->
+        <div class="hero-game-icons">
+          <div class="hero-game-icon" style="background:#FF6B35"><img src="assets/images/logo/Free Fire.png" alt="Free Fire" style="width:100%;height:100%;object-fit:contain;border-radius:inherit"></div>
+          <div class="hero-game-icon" style="background:#1E90FF"><img src="assets/images/logo/Mobile_Legend.jpg" alt="Mobile Legends" style="width:100%;height:100%;object-fit:contain;border-radius:inherit"></div>
+          <div class="hero-game-icon" style="background:#FF4655"><img src="assets/images/logo/Valorant.png" alt="Valorant" style="width:100%;height:100%;object-fit:contain;border-radius:inherit"></div>
+          <div class="hero-game-icon" style="background:#F5A623"><img src="assets/images/logo/PUBGM.jpg" alt="PUBG Mobile" style="width:100%;height:100%;object-fit:contain;border-radius:inherit"></div>
+          <div class="hero-game-icon" style="background:#9B59B6"><img src="assets/images/logo/AOV.png" alt="AOV" style="width:100%;height:100%;object-fit:contain;border-radius:inherit"></div>
+          <div class="hero-game-icon" style="background:#4A9EFF"><img src="assets/images/logo/Genshin_Impact.jpg" alt="Genshin Impact" style="width:100%;height:100%;object-fit:contain;border-radius:inherit"></div>
+          <div class="hero-game-icon" style="background:#C0A0FF"><img src="assets/images/logo/Honkai_Star_rail.jpg" alt="Honkai Star Rail" style="width:100%;height:100%;object-fit:contain;border-radius:inherit"></div>
+          <div class="hero-game-icon" style="background:#27AE60"><img src="assets/images/logo/Clash_of_clans.jpg" alt="Clash of Clans" style="width:100%;height:100%;object-fit:contain;border-radius:inherit"></div>
+        </div>
       </div>
     </div>
   </section>
@@ -292,22 +382,22 @@
       <p class="section-subtitle">Kami berkomitmen memberikan pelayanan terbaik untukmu</p>
       <div class="grid grid-4 gap-lg">
         <div class="unggul-card">
-          <div class="unggul-icon">⚡</div>
+          <div class="unggul-icon"><img class="icon-img" src="assets/images/icons/lightning_8650972.png" alt="" style="width:36px;height:36px"></div>
           <h3>Proses Cepat</h3>
           <p>Item langsung masuk ke akun game kamu dalam hitungan menit setelah pembayaran</p>
         </div>
         <div class="unggul-card">
-          <div class="unggul-icon">💰</div>
+          <div class="unggul-icon"><img class="icon-img" src="assets/images/icons/money-bag_1653705.png" alt="" style="width:36px;height:36px"></div>
           <h3>Harga Terjangkau</h3>
           <p>Dapatkan harga termurah dengan promo dan diskon yang selalu update setiap minggu</p>
         </div>
         <div class="unggul-card">
-          <div class="unggul-icon">🎧</div>
+          <div class="unggul-icon"><img class="icon-img" src="assets/images/icons/customer-service_12096376.png" alt="" style="width:36px;height:36px"></div>
           <h3>24/7 Support</h3>
           <p>Tim customer service kami siap membantu kamu kapan saja melalui WhatsApp dan live chat</p>
         </div>
         <div class="unggul-card">
-          <div class="unggul-icon">🔒</div>
+          <div class="unggul-icon"><img class="icon-img" src="assets/images/icons/encrypted-file.png" alt="" style="width:36px;height:36px"></div>
           <h3>Aman & Terpercaya</h3>
           <p>Transaksi aman terenkripsi dan sudah dipercaya ribuan pelanggan di seluruh Indonesia</p>
         </div>
@@ -323,10 +413,10 @@
           <h3 style="font-size:1.25rem">DexVoucher</h3>
           <p>Platform top up game Indonesia tercepat, termurah, dan terpercaya. Melayani 8 game populer dengan proses instan.</p>
           <div class="flex gap-sm" style="margin-top:16px">
-            <a href="#" style="font-size:1.25rem" aria-label="Facebook">📘</a>
-            <a href="#" style="font-size:1.25rem" aria-label="Instagram">📸</a>
-            <a href="#" style="font-size:1.25rem" aria-label="Twitter">🐦</a>
-            <a href="#" style="font-size:1.25rem" aria-label="TikTok">🎵</a>
+            <a href="#" style="font-size:1.25rem" aria-label="Facebook"><img class="icon-img" src="assets/images/icons/social.png" alt="" style="width:20px;height:20px"></a>
+            <a href="#" style="font-size:1.25rem" aria-label="Instagram"><img class="icon-img" src="assets/images/icons/social.png" alt="" style="width:20px;height:20px"></a>
+            <a href="#" style="font-size:1.25rem" aria-label="Twitter"><img class="icon-img" src="assets/images/icons/twitter.png" alt="" style="width:20px;height:20px"></a>
+            <a href="#" style="font-size:1.25rem" aria-label="TikTok"><img class="icon-img" src="assets/images/icons/social.png" alt="" style="width:20px;height:20px"></a>
           </div>
         </div>
         <div class="footer-column">
@@ -362,7 +452,7 @@
 
   <!-- Floating WhatsApp -->
   <a href="https://wa.me/6281234567890" target="_blank" class="whatsapp-float" aria-label="Hubungi WhatsApp">
-    💬
+    <img class="icon-img" src="assets/images/icons/whatsapp.png" alt="" style="width:28px;height:28px">
   </a>
 
   <!-- Scroll to Top -->
@@ -371,7 +461,7 @@
   <!-- Cookie Banner -->
   <div class="cookie-banner" id="cookie-banner">
     <div class="flex items-center justify-between" style="max-width:1200px;margin:0 auto">
-      <p style="font-size:0.85rem;color:var(--text-secondary)">🍪 Kami menggunakan cookie untuk meningkatkan pengalamanmu.</p>
+      <p style="font-size:0.85rem;color:var(--text-secondary)"><img class="icon-img" src="assets/images/icons/cookie.png" alt="" style="width:16px;height:16px"> Kami menggunakan cookie untuk meningkatkan pengalamanmu.</p>
       <button class="btn btn-primary btn-sm" id="cookie-accept">Setuju</button>
     </div>
   </div>
