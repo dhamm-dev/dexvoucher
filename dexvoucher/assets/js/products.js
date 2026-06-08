@@ -93,6 +93,50 @@ const Products = {
       categories: ['voucher'],
       hasServerId: false,
       badge: null
+    },
+    'roblox': {
+      name: 'Roblox',
+      color: '#E2231A',
+      icon: 'R',
+      logo: 'Roblox.svg',
+      banner: 'Roblox_B.svg',
+      description: 'Top up Robux Roblox dengan harga termurah. Premium membership tersedia.',
+      categories: ['voucher', 'membership'],
+      hasServerId: false,
+      badge: 'HOT'
+    },
+    'codm': {
+      name: 'COD Mobile',
+      color: '#C5943E',
+      icon: 'CM',
+      logo: 'CODM.svg',
+      banner: 'CODM_B.svg',
+      description: 'Top up CP COD Mobile termurah. Battle Pass juga tersedia.',
+      categories: ['voucher', 'membership'],
+      hasServerId: false,
+      badge: 'NEW'
+    },
+    'efootball': {
+      name: 'eFootball',
+      color: '#00A859',
+      icon: 'EF',
+      logo: 'eFootball.svg',
+      banner: 'eFootball_B.svg',
+      description: 'Top up eFootball Coins dengan harga terbaik. Proses instan.',
+      categories: ['voucher'],
+      hasServerId: false,
+      badge: null
+    },
+    'delta-force': {
+      name: 'Delta Force',
+      color: '#2D5A27',
+      icon: 'DF',
+      logo: 'Delta_Force.svg',
+      banner: 'DeltaForce_B.svg',
+      description: 'Top up Credits Delta Force termurah. Battle Pass tersedia.',
+      categories: ['voucher', 'membership'],
+      hasServerId: false,
+      badge: 'NEW'
     }
   },
 

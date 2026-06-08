@@ -955,6 +955,10 @@ tr:hover td {
 .game-genshin-impact { --game-accent: #4A9EFF; --game-accent-glow: rgba(74, 158, 255, 0.25); }
 .game-honkai-star-rail { --game-accent: #C0A0FF; --game-accent-glow: rgba(192, 160, 255, 0.25); }
 .game-clash-of-clans { --game-accent: #27AE60; --game-accent-glow: rgba(39, 174, 96, 0.25); }
+.game-roblox { --game-accent: #E2231A; --game-accent-glow: rgba(226, 35, 26, 0.25); }
+.game-codm { --game-accent: #C5943E; --game-accent-glow: rgba(197, 148, 62, 0.25); }
+.game-efootball { --game-accent: #00A859; --game-accent-glow: rgba(0, 168, 89, 0.25); }
+.game-delta-force { --game-accent: #2D5A27; --game-accent-glow: rgba(45, 90, 39, 0.25); }
 
 /* ===== PRODUCT CARD ===== */
 .product-card {
@@ -1230,6 +1234,20 @@ tr:hover td {
   display: inline-block;
   vertical-align: middle;
   object-fit: contain;
+}
+
+/* ===== CART / CHECKOUT LAYOUT ===== */
+.cart-layout {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 24px;
+  align-items: start;
+}
+.checkout-layout {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 24px;
+  align-items: start;
 }
 
 /* ===== MAINTENANCE BANNER ===== */

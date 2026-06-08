@@ -12,7 +12,7 @@ const Navbar = {
     { label: 'Tentang', href: '/dexvoucher/pages/user/about.html' }
   ],
 
-  /** Data 8 game untuk dropdown navigasi */
+  /** Data game untuk dropdown navigasi */
   GAMES: [
     { id: 'free-fire', name: 'Free Fire', color: '#FF6B35' },
     { id: 'mobile-legends', name: 'Mobile Legends', color: '#1E90FF' },
@@ -21,7 +21,11 @@ const Navbar = {
     { id: 'aov', name: 'AOV', color: '#9B59B6' },
     { id: 'genshin-impact', name: 'Genshin Impact', color: '#4A9EFF' },
     { id: 'honkai-star-rail', name: 'Honkai Star Rail', color: '#C0A0FF' },
-    { id: 'clash-of-clans', name: 'Clash of Clans', color: '#27AE60' }
+    { id: 'clash-of-clans', name: 'Clash of Clans', color: '#27AE60' },
+    { id: 'roblox', name: 'Roblox', color: '#E2231A' },
+    { id: 'codm', name: 'COD Mobile', color: '#C5943E' },
+    { id: 'efootball', name: 'eFootball', color: '#00A859' },
+    { id: 'delta-force', name: 'Delta Force', color: '#2D5A27' }
   ],
 
   /** Render navbar ke dalam container */

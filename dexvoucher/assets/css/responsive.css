@@ -27,6 +27,10 @@
     font-size: 2rem;
   }
 
+  .hero .hero-content {
+    max-width: 100%;
+  }
+
   .sidebar {
     transform: translateX(-100%);
   }
@@ -85,6 +89,35 @@
     flex-direction: column;
     align-items: flex-start;
   }
+
+  /* ===== GAME PAGE - TABLET ===== */
+  .game-banner {
+    padding: 90px 0 50px !important;
+  }
+  .game-header-content {
+    flex-direction: column !important;
+    text-align: center !important;
+  }
+  .game-header-logo {
+    width: 70px !important;
+    height: 70px !important;
+  }
+  .game-header-title {
+    font-size: 1.5rem !important;
+  }
+  .game-header-desc {
+    max-width: 100% !important;
+  }
+
+  /* ===== CART / CHECKOUT - TABLET ===== */
+  .cart-layout,
+  .checkout-layout {
+    grid-template-columns: 1fr;
+  }
+  .cart-summary {
+    position: static !important;
+  }
+
 }
 
 /* ===== MOBILE (< 576px) ===== */
@@ -105,6 +138,8 @@
 
   .hero {
     padding: 100px 0 60px;
+    min-height: auto;
+    max-height: none;
   }
 
   .hero h1 {
@@ -121,6 +156,10 @@
 
   .section-title {
     font-size: 1.25rem;
+  }
+
+  .section-subtitle {
+    margin-bottom: 24px;
   }
 
   .footer-grid {
@@ -205,6 +244,124 @@
   .tab {
     padding: 8px 14px;
     font-size: 0.8rem;
+  }
+
+  /* ===== GAME PAGE - MOBILE ===== */
+  .game-banner {
+    padding: 80px 0 30px !important;
+  }
+  .game-header-content {
+    flex-direction: column !important;
+    text-align: center !important;
+    gap: 16px !important;
+  }
+  .game-header-logo {
+    width: 60px !important;
+    height: 60px !important;
+  }
+  .game-header-title {
+    font-size: 1.25rem !important;
+  }
+  .game-header-desc {
+    font-size: 0.85rem !important;
+    max-width: 100% !important;
+  }
+  .glass-header {
+    padding: 16px !important;
+  }
+  .game-content {
+    padding: 24px 0 40px !important;
+  }
+
+  /* ===== INVOICE - MOBILE ===== */
+  .invoice-card {
+    padding: 20px 16px !important;
+  }
+
+  /* ===== 404 - MOBILE ===== */
+  .error-code {
+    font-size: clamp(3rem, 20vw, 6rem) !important;
+  }
+  .error-emoji {
+    font-size: 3rem !important;
+  }
+
+  /* ===== CART/CHECKOUT - MOBILE ===== */
+  .cart-summary {
+    position: static !important;
+  }
+  .cart-item {
+    flex-direction: column;
+    text-align: center;
+    gap: 8px;
+  }
+  .cart-item .cart-item-actions {
+    justify-content: center;
+  }
+
+  /* ===== AUTH PAGES - MOBILE ===== */
+  .auth-card {
+    padding: 24px 16px !important;
+  }
+
+  /* ===== HISTORY - MOBILE ===== */
+  .trx-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .trx-row .trx-date,
+  .trx-row .trx-id {
+    grid-column: span 1;
+  }
+
+  /* ===== PROMO BANNER - MOBILE ===== */
+  .promo-banner {
+    flex-direction: column;
+    text-align: center;
+    padding: 20px !important;
+  }
+}
+
+/* ===== MOBILE - ADMIN TABLES (< 576px) ===== */
+@media (max-width: 575px) {
+  /* Sembunyikan kolom non-esensial di tabel admin */
+  .table-col-date,
+  .table-col-phone,
+  .table-col-role,
+  .table-col-type,
+  .table-col-maxdisc,
+  .table-col-used,
+  .table-col-category,
+  .table-col-status-trx {
+    display: none;
+  }
+  /* Filter admin jadi vertikal */
+  .admin-filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .admin-filters select,
+  .admin-filters input {
+    width: 100% !important;
+    min-width: unset !important;
+  }
+  /* Stat card grid admin */
+  .admin-stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+}
+
+/* ===== ULTRA MOBILE (< 400px) ===== */
+@media (max-width: 399px) {
+  .admin-stats {
+    grid-template-columns: 1fr;
+  }
+  .hero h1 {
+    font-size: 1.3rem;
+  }
+  .game-header-title {
+    font-size: 1.1rem;
   }
 }
 

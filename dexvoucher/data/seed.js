@@ -15,9 +15,6 @@ const Seed = {
       return;
     }
 
-    const existing = Storage.getProducts();
-    if (existing && existing.length > 0) return;
-
     this.seedAdmin();
     this.seedUsers();
     this.seedProducts();
@@ -77,259 +74,170 @@ const Seed = {
 
   /** Buat semua produk dari tabel harga */
   seedProducts() {
-    const products = [];
+    const existing = Storage.getProducts();
+    const seededGames = new Set(existing.map(p => p.game));
+    const products = [...existing];
+    const now = new Date().toISOString();
+
+    function addGameProducts(gameId, category, items, opts = {}) {
+      if (seededGames.has(gameId)) return;
+      const origMul = opts.origMul || 1.1;
+      items.forEach((item, i) => {
+        products.push({
+          id: generateId('prd'),
+          game: gameId,
+          category: category,
+          name: item.name,
+          amount: item.amount || 0,
+          price: item.price,
+          originalPrice: Math.round(item.price * origMul),
+          badge: item.badge || null,
+          isActive: true,
+          createdAt: now
+        });
+      });
+    }
 
     // ===== Free Fire =====
-    const ff = [
-      { name: '5 Diamond', amount: 5, price: 1500 },
-      { name: '70 Diamond', amount: 70, price: 15000 },
-      { name: '140 Diamond', amount: 140, price: 29000 },
-      { name: '355 Diamond', amount: 355, price: 73000 },
-      { name: '720 Diamond', amount: 720, price: 145000 },
-      { name: '1.450 Diamond', amount: 1450, price: 285000 },
-      { name: '2.180 Diamond', amount: 2180, price: 430000 }
-    ];
-    ff.forEach((p, i) => {
-      products.push({
-        id: generateId('prd'),
-        game: 'free-fire',
-        category: 'diamond',
-        name: p.name,
-        amount: p.amount,
-        price: p.price,
-        originalPrice: Math.round(p.price * 1.1),
-        badge: i === 2 ? 'HOT' : null,
-        isActive: true,
-        createdAt: new Date().toISOString()
-      });
-    });
-    products.push({
-      id: generateId('prd'),
-      game: 'free-fire',
-      category: 'membership',
-      name: 'Weekly Membership',
-      amount: 0,
-      price: 22000,
-      originalPrice: 25000,
-      badge: 'SALE',
-      isActive: true,
-      createdAt: new Date().toISOString()
-    });
-    products.push({
-      id: generateId('prd'),
-      game: 'free-fire',
-      category: 'membership',
-      name: 'Monthly Membership',
-      amount: 0,
-      price: 85000,
-      originalPrice: 95000,
-      badge: null,
-      isActive: true,
-      createdAt: new Date().toISOString()
-    });
+    addGameProducts('free-fire', 'diamond', [
+      { name: '5 Diamond', amount: 5, price: 1500, badge: null },
+      { name: '70 Diamond', amount: 70, price: 15000, badge: null },
+      { name: '140 Diamond', amount: 140, price: 29000, badge: 'HOT' },
+      { name: '355 Diamond', amount: 355, price: 73000, badge: null },
+      { name: '720 Diamond', amount: 720, price: 145000, badge: null },
+      { name: '1.450 Diamond', amount: 1450, price: 285000, badge: null },
+      { name: '2.180 Diamond', amount: 2180, price: 430000, badge: null }
+    ]);
+    addGameProducts('free-fire', 'membership', [
+      { name: 'Weekly Membership', amount: 0, price: 22000, badge: 'SALE' },
+      { name: 'Monthly Membership', amount: 0, price: 85000, badge: null }
+    ]);
 
     // ===== Mobile Legends =====
-    const ml = [
-      { name: '11 Diamond', amount: 11, price: 3000 },
-      { name: '56 Diamond', amount: 56, price: 15000 },
-      { name: '112 Diamond', amount: 112, price: 29000 },
-      { name: '275 Diamond', amount: 275, price: 72000 },
-      { name: '570 Diamond', amount: 570, price: 145000 },
-      { name: '1.155 Diamond', amount: 1155, price: 285000 },
-      { name: '2.398 Diamond', amount: 2398, price: 580000 }
-    ];
-    ml.forEach((p, i) => {
-      products.push({
-        id: generateId('prd'),
-        game: 'mobile-legends',
-        category: 'diamond',
-        name: p.name,
-        amount: p.amount,
-        price: p.price,
-        originalPrice: Math.round(p.price * 1.1),
-        badge: i === 0 ? 'NEW' : null,
-        isActive: true,
-        createdAt: new Date().toISOString()
-      });
-    });
-    products.push({
-      id: generateId('prd'),
-      game: 'mobile-legends',
-      category: 'membership',
-      name: 'Starlight Member',
-      amount: 0,
-      price: 50000,
-      originalPrice: 55000,
-      badge: 'HOT',
-      isActive: true,
-      createdAt: new Date().toISOString()
-    });
-    products.push({
-      id: generateId('prd'),
-      game: 'mobile-legends',
-      category: 'bundle',
-      name: 'Twilight Pass',
-      amount: 0,
-      price: 135000,
-      originalPrice: 150000,
-      badge: null,
-      isActive: true,
-      createdAt: new Date().toISOString()
-    });
+    addGameProducts('mobile-legends', 'diamond', [
+      { name: '11 Diamond', amount: 11, price: 3000, badge: 'NEW' },
+      { name: '56 Diamond', amount: 56, price: 15000, badge: null },
+      { name: '112 Diamond', amount: 112, price: 29000, badge: null },
+      { name: '275 Diamond', amount: 275, price: 72000, badge: null },
+      { name: '570 Diamond', amount: 570, price: 145000, badge: null },
+      { name: '1.155 Diamond', amount: 1155, price: 285000, badge: null },
+      { name: '2.398 Diamond', amount: 2398, price: 580000, badge: null }
+    ]);
+    addGameProducts('mobile-legends', 'membership', [
+      { name: 'Starlight Member', amount: 0, price: 50000, badge: 'HOT' }
+    ]);
+    addGameProducts('mobile-legends', 'bundle', [
+      { name: 'Twilight Pass', amount: 0, price: 135000, badge: null }
+    ]);
 
     // ===== Valorant =====
-    const val = [
-      { name: '475 VP', amount: 475, price: 55000 },
-      { name: '1.000 VP', amount: 1000, price: 110000 },
-      { name: '2.050 VP', amount: 2050, price: 215000 },
-      { name: '3.650 VP', amount: 3650, price: 370000 },
-      { name: '5.350 VP', amount: 5350, price: 530000 },
-      { name: '11.000 VP', amount: 11000, price: 1050000 }
-    ];
-    val.forEach((p, i) => {
-      products.push({
-        id: generateId('prd'),
-        game: 'valorant',
-        category: 'voucher',
-        name: p.name,
-        amount: p.amount,
-        price: p.price,
-        originalPrice: Math.round(p.price * 1.08),
-        badge: i === 3 ? 'SALE' : null,
-        isActive: true,
-        createdAt: new Date().toISOString()
-      });
-    });
+    addGameProducts('valorant', 'voucher', [
+      { name: '475 VP', amount: 475, price: 55000, badge: null },
+      { name: '1.000 VP', amount: 1000, price: 110000, badge: null },
+      { name: '2.050 VP', amount: 2050, price: 215000, badge: null },
+      { name: '3.650 VP', amount: 3650, price: 370000, badge: 'SALE' },
+      { name: '5.350 VP', amount: 5350, price: 530000, badge: null },
+      { name: '11.000 VP', amount: 11000, price: 1050000, badge: null }
+    ], { origMul: 1.08 });
 
     // ===== PUBG Mobile =====
-    const pubg = [
-      { name: '60 UC', amount: 60, price: 15000 },
-      { name: '325 UC', amount: 325, price: 75000 },
-      { name: '660 UC', amount: 660, price: 145000 },
-      { name: '1.800 UC', amount: 1800, price: 375000 },
-      { name: '3.850 UC', amount: 3850, price: 750000 },
-      { name: '8.100 UC', amount: 8100, price: 1500000 }
-    ];
-    pubg.forEach((p, i) => {
-      products.push({
-        id: generateId('prd'),
-        game: 'pubg-mobile',
-        category: 'voucher',
-        name: p.name,
-        amount: p.amount,
-        price: p.price,
-        originalPrice: Math.round(p.price * 1.1),
-        badge: i === 1 ? 'HOT' : null,
-        isActive: true,
-        createdAt: new Date().toISOString()
-      });
-    });
-    products.push({
-      id: generateId('prd'),
-      game: 'pubg-mobile',
-      category: 'membership',
-      name: 'Royal Pass (M)',
-      amount: 0,
-      price: 150000,
-      originalPrice: 165000,
-      badge: null,
-      isActive: true,
-      createdAt: new Date().toISOString()
-    });
+    addGameProducts('pubg-mobile', 'voucher', [
+      { name: '60 UC', amount: 60, price: 15000, badge: null },
+      { name: '325 UC', amount: 325, price: 75000, badge: 'HOT' },
+      { name: '660 UC', amount: 660, price: 145000, badge: null },
+      { name: '1.800 UC', amount: 1800, price: 375000, badge: null },
+      { name: '3.850 UC', amount: 3850, price: 750000, badge: null },
+      { name: '8.100 UC', amount: 8100, price: 1500000, badge: null }
+    ]);
+    addGameProducts('pubg-mobile', 'membership', [
+      { name: 'Royal Pass (M)', amount: 0, price: 150000, badge: null }
+    ]);
 
     // ===== AOV =====
-    const aov = [
-      { name: '60 Voucher', amount: 60, price: 12000 },
-      { name: '150 Voucher', amount: 150, price: 29000 },
-      { name: '300 Voucher', amount: 300, price: 57000 },
-      { name: '600 Voucher', amount: 600, price: 112000 },
-      { name: '1.500 Voucher', amount: 1500, price: 270000 }
-    ];
-    aov.forEach((p, i) => {
-      products.push({
-        id: generateId('prd'),
-        game: 'aov',
-        category: 'voucher',
-        name: p.name,
-        amount: p.amount,
-        price: p.price,
-        originalPrice: Math.round(p.price * 1.1),
-        badge: i === 3 ? 'SALE' : null,
-        isActive: true,
-        createdAt: new Date().toISOString()
-      });
-    });
+    addGameProducts('aov', 'voucher', [
+      { name: '60 Voucher', amount: 60, price: 12000, badge: null },
+      { name: '150 Voucher', amount: 150, price: 29000, badge: null },
+      { name: '300 Voucher', amount: 300, price: 57000, badge: null },
+      { name: '600 Voucher', amount: 600, price: 112000, badge: 'SALE' },
+      { name: '1.500 Voucher', amount: 1500, price: 270000, badge: null }
+    ]);
 
     // ===== Genshin Impact =====
-    const genshin = [
-      { name: '60 Crystal', amount: 60, price: 15000 },
-      { name: '330 Crystal', amount: 330, price: 75000 },
-      { name: '1.090 Crystal', amount: 1090, price: 235000 },
-      { name: '2.240 Crystal', amount: 2240, price: 470000 },
-      { name: '3.880 Crystal', amount: 3880, price: 810000 },
-      { name: '8.080 Crystal', amount: 8080, price: 1600000 }
-    ];
-    genshin.forEach((p, i) => {
-      products.push({
-        id: generateId('prd'),
-        game: 'genshin-impact',
-        category: 'voucher',
-        name: p.name,
-        amount: p.amount,
-        price: p.price,
-        originalPrice: Math.round(p.price * 1.08),
-        badge: i === 0 ? 'NEW' : null,
-        isActive: true,
-        createdAt: new Date().toISOString()
-      });
-    });
+    addGameProducts('genshin-impact', 'voucher', [
+      { name: '60 Crystal', amount: 60, price: 15000, badge: 'NEW' },
+      { name: '330 Crystal', amount: 330, price: 75000, badge: null },
+      { name: '1.090 Crystal', amount: 1090, price: 235000, badge: null },
+      { name: '2.240 Crystal', amount: 2240, price: 470000, badge: null },
+      { name: '3.880 Crystal', amount: 3880, price: 810000, badge: null },
+      { name: '8.080 Crystal', amount: 8080, price: 1600000, badge: null }
+    ], { origMul: 1.08 });
 
     // ===== Honkai Star Rail =====
-    const hsr = [
-      { name: '60 Shard', amount: 60, price: 15000 },
-      { name: '330 Shard', amount: 330, price: 75000 },
-      { name: '1.090 Shard', amount: 1090, price: 235000 },
-      { name: '2.240 Shard', amount: 2240, price: 470000 },
-      { name: '3.880 Shard', amount: 3880, price: 810000 }
-    ];
-    hsr.forEach((p, i) => {
-      products.push({
-        id: generateId('prd'),
-        game: 'honkai-star-rail',
-        category: 'voucher',
-        name: p.name,
-        amount: p.amount,
-        price: p.price,
-        originalPrice: Math.round(p.price * 1.08),
-        badge: null,
-        isActive: true,
-        createdAt: new Date().toISOString()
-      });
-    });
+    addGameProducts('honkai-star-rail', 'voucher', [
+      { name: '60 Shard', amount: 60, price: 15000, badge: null },
+      { name: '330 Shard', amount: 330, price: 75000, badge: null },
+      { name: '1.090 Shard', amount: 1090, price: 235000, badge: null },
+      { name: '2.240 Shard', amount: 2240, price: 470000, badge: null },
+      { name: '3.880 Shard', amount: 3880, price: 810000, badge: null }
+    ], { origMul: 1.08 });
 
     // ===== Clash of Clans =====
-    const coc = [
-      { name: '80 Gems', amount: 80, price: 15000 },
-      { name: '500 Gems', amount: 500, price: 85000 },
-      { name: '1.200 Gems', amount: 1200, price: 200000 },
-      { name: '2.500 Gems', amount: 2500, price: 400000 },
-      { name: '6.500 Gems', amount: 6500, price: 1000000 },
-      { name: '14.000 Gems', amount: 14000, price: 2000000 }
-    ];
-    coc.forEach((p, i) => {
-      products.push({
-        id: generateId('prd'),
-        game: 'clash-of-clans',
-        category: 'voucher',
-        name: p.name,
-        amount: p.amount,
-        price: p.price,
-        originalPrice: Math.round(p.price * 1.1),
-        badge: i === 2 ? 'HOT' : null,
-        isActive: true,
-        createdAt: new Date().toISOString()
-      });
-    });
+    addGameProducts('clash-of-clans', 'voucher', [
+      { name: '80 Gems', amount: 80, price: 15000, badge: null },
+      { name: '500 Gems', amount: 500, price: 85000, badge: null },
+      { name: '1.200 Gems', amount: 1200, price: 200000, badge: 'HOT' },
+      { name: '2.500 Gems', amount: 2500, price: 400000, badge: null },
+      { name: '6.500 Gems', amount: 6500, price: 1000000, badge: null },
+      { name: '14.000 Gems', amount: 14000, price: 2000000, badge: null }
+    ]);
+
+    // ===== Roblox =====
+    addGameProducts('roblox', 'voucher', [
+      { name: '80 Robux', amount: 80, price: 20000, badge: 'HOT' },
+      { name: '400 Robux', amount: 400, price: 95000, badge: null },
+      { name: '800 Robux', amount: 800, price: 185000, badge: null },
+      { name: '1.700 Robux', amount: 1700, price: 375000, badge: null },
+      { name: '4.500 Robux', amount: 4500, price: 950000, badge: null },
+      { name: '10.000 Robux', amount: 10000, price: 2000000, badge: null }
+    ]);
+    addGameProducts('roblox', 'membership', [
+      { name: 'Premium 450', amount: 0, price: 60000, badge: 'SALE' }
+    ]);
+
+    // ===== COD Mobile =====
+    addGameProducts('codm', 'voucher', [
+      { name: '60 CP', amount: 60, price: 17000, badge: null },
+      { name: '330 CP', amount: 330, price: 85000, badge: 'HOT' },
+      { name: '660 CP', amount: 660, price: 160000, badge: null },
+      { name: '1.800 CP', amount: 1800, price: 400000, badge: null },
+      { name: '3.850 CP', amount: 3850, price: 800000, badge: null },
+      { name: '8.100 CP', amount: 8100, price: 1600000, badge: null }
+    ]);
+    addGameProducts('codm', 'membership', [
+      { name: 'Battle Pass', amount: 0, price: 150000, badge: null }
+    ]);
+
+    // ===== eFootball =====
+    addGameProducts('efootball', 'voucher', [
+      { name: '100 Coins', amount: 100, price: 20000, badge: null },
+      { name: '500 Coins', amount: 500, price: 95000, badge: null },
+      { name: '1.000 Coins', amount: 1000, price: 185000, badge: null },
+      { name: '2.500 Coins', amount: 2500, price: 440000, badge: 'NEW' },
+      { name: '5.600 Coins', amount: 5600, price: 950000, badge: null },
+      { name: '12.000 Coins', amount: 12000, price: 1900000, badge: null }
+    ], { origMul: 1.08 });
+
+    // ===== Delta Force =====
+    addGameProducts('delta-force', 'voucher', [
+      { name: '60 Credits', amount: 60, price: 18000, badge: null },
+      { name: '330 Credits', amount: 330, price: 90000, badge: null },
+      { name: '660 Credits', amount: 660, price: 170000, badge: 'HOT' },
+      { name: '1.800 Credits', amount: 1800, price: 420000, badge: null },
+      { name: '3.850 Credits', amount: 3850, price: 850000, badge: null }
+    ]);
+    addGameProducts('delta-force', 'membership', [
+      { name: 'Battle Pass', amount: 0, price: 150000, badge: 'NEW' }
+    ]);
 
     Storage.setProducts(products);
   },
