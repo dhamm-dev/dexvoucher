@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kelola Promo — DexVoucher</title>
+  <link rel="stylesheet" href="../../assets/css/main.css">
+</head>
+<body>
+  <div id="admin-layout"></div>
+  <script src="../../assets/js/utils.js"></script>
+  <script src="../../assets/js/storage.js"></script>
+  <script src="../../assets/js/theme.js"></script>
+  <script src="../../assets/js/auth.js"></script>
+  <script src="../../assets/js/promo.js"></script>
+  <script src="../../assets/js/admin-sidebar.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      ThemeManager.init(); Auth.requireAdmin(); AdminSidebar.render();
+      document.getElementById('breadcrumb').textContent = 'Kelola Promo';
+      const content = document.getElementById('admin-content');
+
+      function render() {
+        const promos = Storage.getPromos();
+        content.innerHTML = `
+          <div class="page-header">
+            <h1>Kelola Promo</h1>
+            <button class="btn btn-primary" id="add-promo-btn">+ Tambah Promo</button>
+          </div>
+          <div class="table-wrapper">
+            <table>
+              <thead><tr><th>Kode</th><th>Tipe</th><th>Nilai</th><th>Min Beli</th><th>Max Diskon</th><th>Kuota</th><th>Terpakai</th><th>Expired</th><th>Status</th><th>Aksi</th></tr></thead>
+              <tbody>${promos.map(p => {
+                const expired = new Date(p.expiredAt) < new Date();
+                return `<tr>
+                  <td style="font-family:var(--font-mono);font-weight:600">${p.code}</td>
+                  <td>${p.type === 'percent' ? '%' : 'Rp'}</td>
+                  <td>${p.type === 'percent' ? p.value + '%' : formatRupiah(p.value)}</td>
+                  <td>${formatRupiah(p.minPurchase)}</td>
+                  <td>${p.maxDiscount > 0 ? formatRupiah(p.maxDiscount) : '-'}</td>
+                  <td>${p.quota > 0 ? p.quota : '∞'}</td>
+                  <td>${p.used || 0}</td>
+                  <td style="font-size:0.82rem">${formatDate(p.expiredAt)}${expired ? ' ⚠️' : ''}</td>
+                  <td><span class="badge ${p.isActive && !expired ? 'badge-success' : 'badge-failed'}">${p.isActive && !expired ? 'Aktif' : expired ? 'Kadaluarsa' : 'Nonaktif'}</span></td>
+                  <td>
+                    <div class="flex gap-sm">
+                      <button class="btn btn-outline btn-sm edit-promo-btn" data-id="${p.id}">Edit</button>
+                      <button class="btn btn-secondary btn-sm toggle-promo-btn" data-id="${p.id}" data-active="${p.isActive}">${p.isActive ? 'Nonaktifkan' : 'Aktifkan'}</button>
+                      <button class="btn btn-danger btn-sm delete-promo-btn" data-id="${p.id}">Hapus</button>
+                    </div>
+                  </td>
+                </tr>`;
+              }).join('')}</tbody>
+            </table>
+          </div>
+          <p style="margin-top:12px;color:var(--text-muted);font-size:0.85rem">Total: ${promos.length} promo</p>
+        `;
+
+        document.getElementById('add-promo-btn').addEventListener('click', () => showPromoModal(null));
+
+        document.querySelectorAll('.edit-promo-btn').forEach(b => b.addEventListener('click', function () {
+          const p = Storage.getPromos().find(x => x.id === this.dataset.id);
+          if (p) showPromoModal(p);
+        }));
+
+        document.querySelectorAll('.toggle-promo-btn').forEach(b => b.addEventListener('click', function () {
+          let all = Storage.getPromos();
+          const idx = all.findIndex(x => x.id === this.dataset.id);
+          if (idx !== -1) { all[idx].isActive = !all[idx].isActive; Storage.setPromos(all); render(); }
+        }));
+
+        document.querySelectorAll('.delete-promo-btn').forEach(b => b.addEventListener('click', function () {
+          if (!confirm('Hapus promo ini?')) return;
+          let all = Storage.getPromos();
+          all = all.filter(x => x.id !== this.dataset.id);
+          Storage.setPromos(all);
+          render();
+        }));
+      }
+
+      function showPromoModal(existing) {
+        const ov = document.querySelector('.modal-overlay'); if (ov) ov.remove();
+        const overlay = document.createElement('div'); overlay.className = 'modal-overlay';
+        overlay.innerHTML = `
+          <div class="modal" style="max-width:500px">
+            <div class="modal-header"><h3>${existing ? 'Edit Promo' : 'Tambah Promo'}</h3><button class="modal-close" id="modal-close">&times;</button></div>
+            <div class="modal-body">
+              <form id="promo-form">
+                <div class="form-group input-group"><label>Kode Promo</label><input type="text" id="f-code" class="input-field" value="${existing?.code || ''}" placeholder="CONTOH100" required></div>
+                <div class="form-row">
+                  <div class="form-group input-group"><label>Tipe</label><select id="f-type" class="input-field"><option value="percent" ${existing?.type === 'percent' ? 'selected' : ''}>Persen (%)</option><option value="fixed" ${existing?.type === 'fixed' ? 'selected' : ''}>Nominal (Rp)</option></select></div>
+                  <div class="form-group input-group"><label>Nilai</label><input type="number" id="f-value" class="input-field" value="${existing?.value || ''}" placeholder="10 atau 10000" required min="0"></div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group input-group"><label>Min. Pembelian (Rp)</label><input type="number" id="f-min" class="input-field" value="${existing?.minPurchase || 0}" min="0"></div>
+                  <div class="form-group input-group"><label>Max Diskon (Rp, 0 = tak terbatas)</label><input type="number" id="f-max" class="input-field" value="${existing?.maxDiscount || 0}" min="0"></div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group input-group"><label>Kuota (0 = tak terbatas)</label><input type="number" id="f-quota" class="input-field" value="${existing?.quota || 0}" min="0"></div>
+                  <div class="form-group input-group"><label>Tanggal Kadaluarsa</label><input type="date" id="f-expired" class="input-field" value="${existing ? new Date(existing.expiredAt).toISOString().split('T')[0] : ''}" required></div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">${existing ? 'Simpan Perubahan' : 'Tambah Promo'}</button>
+              </form>
+            </div>
+          </div>`;
+        document.body.appendChild(overlay);
+        overlay.querySelector('#modal-close').addEventListener('click', () => overlay.remove());
+        overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
+        overlay.querySelector('#promo-form').addEventListener('submit', function (e) {
+          e.preventDefault();
+          let all = Storage.getPromos();
+          const data = {
+            code: document.getElementById('f-code').value.trim().toUpperCase(),
+            type: document.getElementById('f-type').value,
+            value: parseInt(document.getElementById('f-value').value) || 0,
+            minPurchase: parseInt(document.getElementById('f-min').value) || 0,
+            maxDiscount: parseInt(document.getElementById('f-max').value) || 0,
+            quota: parseInt(document.getElementById('f-quota').value) || 0,
+            expiredAt: new Date(document.getElementById('f-expired').value).toISOString(),
+            isActive: existing ? existing.isActive : true
+          };
+          if (!data.code || !data.value) return;
+
+          if (existing) {
+            const idx = all.findIndex(x => x.id === existing.id);
+            if (idx !== -1) { all[idx] = { ...all[idx], ...data, used: existing.used || 0 }; }
+          } else {
+            const dup = all.some(p => p.code === data.code);
+            if (dup) { alert('Kode promo sudah ada!'); return; }
+            data.id = generateId('promo');
+            data.used = 0;
+            all.push(data);
+          }
+          Storage.setPromos(all);
+          overlay.remove();
+          render();
+        });
+      }
+      render();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,271 @@
+@charset "UTF-8";
+
+/* =========================================================
+   RESPONSIVE — DexVoucher
+   Breakpoints:
+     Mobile   : < 576px
+     Tablet   : 576px – 991px
+     Desktop  : ≥ 992px
+     Wide     : ≥ 1400px
+   ========================================================= */
+
+/* ===== TABLET (576px – 991px) ===== */
+@media (max-width: 991px) {
+  .grid-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .grid-3 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .hero h1 {
+    font-size: 2rem;
+  }
+
+  .sidebar {
+    transform: translateX(-100%);
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .sidebar-toggle {
+    display: flex;
+  }
+
+  .admin-main {
+    margin-left: 0;
+  }
+
+  .admin-header {
+    padding: 12px 20px;
+  }
+
+  .admin-content {
+    padding: 20px;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .navbar-menu {
+    position: fixed;
+    top: var(--navbar-height);
+    left: 0;
+    right: 0;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border);
+    flex-direction: column;
+    padding: 16px 24px;
+    gap: 12px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px);
+    transition: var(--transition);
+  }
+
+  .navbar-menu.open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .navbar-toggle {
+    display: flex;
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* ===== MOBILE (< 576px) ===== */
+@media (max-width: 575px) {
+  .container {
+    padding: 0 16px;
+  }
+
+  html {
+    font-size: 14px;
+  }
+
+  .grid-2,
+  .grid-3,
+  .grid-4 {
+    grid-template-columns: 1fr;
+  }
+
+  .hero {
+    padding: 100px 0 60px;
+  }
+
+  .hero h1 {
+    font-size: 1.5rem;
+  }
+
+  .hero p {
+    font-size: 0.95rem;
+  }
+
+  .section {
+    padding: 40px 0;
+  }
+
+  .section-title {
+    font-size: 1.25rem;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .btn-lg {
+    padding: 12px 24px;
+    font-size: 0.9rem;
+  }
+
+  .modal {
+    width: 95%;
+    max-width: none;
+  }
+
+  .modal-header,
+  .modal-body,
+  .modal-footer {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .toast-container {
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+  }
+
+  .toast {
+    min-width: unset;
+    max-width: none;
+    width: 100%;
+  }
+
+  .navbar {
+    padding: 0 16px;
+  }
+
+  .admin-content {
+    padding: 16px;
+  }
+
+  .admin-header {
+    padding: 10px 16px;
+  }
+
+  .stat-card .stat-value {
+    font-size: 1.5rem;
+  }
+
+  .product-card .product-amount {
+    font-size: 1.25rem;
+  }
+
+  .table-wrapper {
+    margin: 0 -16px;
+    padding: 0 16px;
+  }
+
+  .whatsapp-float {
+    width: 48px;
+    height: 48px;
+    font-size: 1.5rem;
+    bottom: 16px;
+    right: 16px;
+  }
+
+  .scroll-top {
+    bottom: 16px;
+    left: 16px;
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+  }
+
+  .tabs {
+    gap: 0;
+  }
+
+  .tab {
+    padding: 8px 14px;
+    font-size: 0.8rem;
+  }
+}
+
+/* ===== DESKTOP (≥ 992px) ===== */
+@media (min-width: 992px) {
+  .mobile-only {
+    display: none !important;
+  }
+
+  .navbar-menu {
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+    position: static !important;
+    flex-direction: row !important;
+    padding: 0 !important;
+    border: none !important;
+    background: none !important;
+  }
+}
+
+/* ===== WIDE (≥ 1400px) ===== */
+@media (min-width: 1400px) {
+  .container {
+    max-width: 1320px;
+  }
+
+  .hero h1 {
+    font-size: 3rem;
+  }
+
+  .grid-4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* ===== PRINT ===== */
+@media print {
+  .navbar,
+  .sidebar,
+  .footer,
+  .whatsapp-float,
+  .scroll-top,
+  .btn {
+    display: none !important;
+  }
+
+  .admin-main {
+    margin-left: 0;
+  }
+
+  body {
+    background: #fff;
+    color: #000;
+  }
+
+  .card,
+  .stat-card,
+  .chart-wrapper {
+    border: 1px solid #ddd;
+    box-shadow: none;
+  }
+}

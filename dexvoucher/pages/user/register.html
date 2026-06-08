@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daftar — DexVoucher</title>
+  <meta name="description" content="Buat akun DexVoucher dan nikmati top up game termurah.">
+  <link rel="stylesheet" href="../../assets/css/main.css">
+  <style>
+    .auth-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+      background: var(--bg-primary);
+    }
+    .auth-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 40px 32px;
+      width: 100%;
+      max-width: 480px;
+      animation: slideUp 0.4s ease;
+    }
+    .auth-logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 32px;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .auth-logo img { height: 40px; }
+    .auth-title {
+      text-align: center;
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .auth-subtitle {
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      margin-bottom: 24px;
+    }
+    .auth-link {
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-top: 16px;
+    }
+    .auth-link a {
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .auth-link a:hover { text-decoration: underline; }
+    .loading-spinner {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .loading-spinner .spinner {
+      width: 18px;
+      height: 18px;
+      border-width: 2px;
+    }
+    .password-toggle {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      padding: 4px;
+    }
+    .password-toggle:hover { color: var(--text-primary); }
+    .input-wrapper {
+      position: relative;
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-page">
+    <div class="auth-card">
+      <div class="auth-logo">
+        <img src="../../assets/images/logo/logo.svg" alt="DexVoucher" onerror="this.style.display='none'">
+        DexVoucher
+      </div>
+      <h1 class="auth-title">Buat Akun Baru</h1>
+      <p class="auth-subtitle">Daftar untuk mulai top up game favoritmu</p>
+
+      <div id="alert-container"></div>
+
+      <form id="register-form" novalidate>
+        <div class="form-group input-group">
+          <label for="name">Nama Lengkap</label>
+          <input type="text" id="name" class="input-field" placeholder="Masukkan nama lengkap" autocomplete="name" required>
+          <span class="input-error" id="name-error"></span>
+        </div>
+
+        <div class="form-group input-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" class="input-field" placeholder="contoh@email.com" autocomplete="email" required>
+          <span class="input-error" id="email-error"></span>
+        </div>
+
+        <div class="form-group input-group">
+          <label for="phone">Nomor Telepon</label>
+          <input type="tel" id="phone" class="input-field" placeholder="08xxxxxxxxxx" autocomplete="tel" required>
+          <span class="input-error" id="phone-error"></span>
+        </div>
+
+        <div class="form-group input-group">
+          <label for="password">Password</label>
+          <div class="input-wrapper">
+            <input type="password" id="password" class="input-field" placeholder="Minimal 6 karakter" autocomplete="new-password" required>
+            <button type="button" class="password-toggle" id="toggle-password" aria-label="Tampilkan password">👁</button>
+          </div>
+          <span class="input-error" id="password-error"></span>
+        </div>
+
+        <div class="form-group input-group">
+          <label for="confirm-password">Konfirmasi Password</label>
+          <div class="input-wrapper">
+            <input type="password" id="confirm-password" class="input-field" placeholder="Ulangi password" autocomplete="new-password" required>
+            <button type="button" class="password-toggle" id="toggle-confirm" aria-label="Tampilkan password">👁</button>
+          </div>
+          <span class="input-error" id="confirm-error"></span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-checkbox">
+            <input type="checkbox" id="terms" required>
+            Saya setuju dengan <a href="#" style="color:var(--accent)">Syarat & Ketentuan</a>
+          </label>
+          <span class="input-error" id="terms-error"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-lg btn-block" id="submit-btn">
+          Daftar
+        </button>
+      </form>
+
+      <p class="auth-link">
+        Sudah punya akun? <a href="login.html">Masuk</a>
+      </p>
+    </div>
+  </div>
+
+  <script src="../../assets/js/utils.js"></script>
+  <script src="../../assets/js/storage.js"></script>
+  <script src="../../assets/js/theme.js"></script>
+  <script src="../../assets/js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      ThemeManager.init();
+
+      // Redirect ke home jika sudah login
+      if (Auth.isLoggedIn()) {
+        window.location.href = '../../index.html';
+        return;
+      }
+
+      const form = document.getElementById('register-form');
+      const nameInput = document.getElementById('name');
+      const emailInput = document.getElementById('email');
+      const phoneInput = document.getElementById('phone');
+      const passwordInput = document.getElementById('password');
+      const confirmInput = document.getElementById('confirm-password');
+      const termsCheck = document.getElementById('terms');
+      const nameError = document.getElementById('name-error');
+      const emailError = document.getElementById('email-error');
+      const phoneError = document.getElementById('phone-error');
+      const passwordError = document.getElementById('password-error');
+      const confirmError = document.getElementById('confirm-error');
+      const termsError = document.getElementById('terms-error');
+      const submitBtn = document.getElementById('submit-btn');
+      const alertContainer = document.getElementById('alert-container');
+
+      // Toggle password visibility
+      document.getElementById('toggle-password').addEventListener('click', function () {
+        const type = passwordInput.type === 'password' ? 'text' : 'password';
+        passwordInput.type = type;
+        this.textContent = type === 'password' ? '👁' : '🙈';
+      });
+      document.getElementById('toggle-confirm').addEventListener('click', function () {
+        const type = confirmInput.type === 'password' ? 'text' : 'password';
+        confirmInput.type = type;
+        this.textContent = type === 'password' ? '👁' : '🙈';
+      });
+
+      // Validasi real-time nama
+      nameInput.addEventListener('input', function () {
+        if (this.value.trim().length < 2) {
+          this.classList.add('error'); this.classList.remove('success');
+          nameError.textContent = 'Nama minimal 2 karakter';
+        } else {
+          this.classList.remove('error'); this.classList.add('success');
+          nameError.textContent = '';
+        }
+      });
+
+      // Validasi real-time email
+      emailInput.addEventListener('input', function () {
+        const val = this.value.trim();
+        if (val && !validateEmail(val)) {
+          this.classList.add('error'); this.classList.remove('success');
+          emailError.textContent = 'Format email tidak valid';
+        } else if (val) {
+          this.classList.remove('error'); this.classList.add('success');
+          emailError.textContent = '';
+        } else {
+          this.classList.remove('error', 'success');
+          emailError.textContent = '';
+        }
+      });
+
+      // Validasi real-time phone
+      phoneInput.addEventListener('input', function () {
+        const val = this.value.trim();
+        if (val && !validatePhone(val)) {
+          this.classList.add('error'); this.classList.remove('success');
+          phoneError.textContent = 'Format nomor telepon tidak valid (08xx atau 62xx)';
+        } else if (val) {
+          this.classList.remove('error'); this.classList.add('success');
+          phoneError.textContent = '';
+        } else {
+          this.classList.remove('error', 'success');
+          phoneError.textContent = '';
+        }
+      });
+
+      // Validasi real-time password
+      passwordInput.addEventListener('input', function () {
+        const val = this.value;
+        if (val && val.length < 6) {
+          this.classList.add('error'); this.classList.remove('success');
+          passwordError.textContent = 'Password minimal 6 karakter';
+        } else if (val) {
+          this.classList.remove('error'); this.classList.add('success');
+          passwordError.textContent = '';
+        } else {
+          this.classList.remove('error', 'success');
+          passwordError.textContent = '';
+        }
+        // Re-validate konfirmasi jika sudah terisi
+        if (confirmInput.value) {
+          validateConfirm();
+        }
+      });
+
+      // Validasi konfirmasi password
+      confirmInput.addEventListener('input', validateConfirm);
+      function validateConfirm() {
+        const val = confirmInput.value;
+        if (!val) {
+          confirmInput.classList.remove('error', 'success');
+          confirmError.textContent = '';
+        } else if (val !== passwordInput.value) {
+          confirmInput.classList.add('error'); confirmInput.classList.remove('success');
+          confirmError.textContent = 'Password tidak cocok';
+        } else {
+          confirmInput.classList.remove('error'); confirmInput.classList.add('success');
+          confirmError.textContent = '';
+        }
+      }
+
+      // Submit form
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        alertContainer.innerHTML = '';
+        let valid = true;
+
+        // Validasi semua field
+        if (!nameInput.value.trim()) {
+          nameInput.classList.add('error'); nameError.textContent = 'Nama harus diisi'; valid = false;
+        }
+        if (!emailInput.value.trim()) {
+          emailInput.classList.add('error'); emailError.textContent = 'Email harus diisi'; valid = false;
+        } else if (!validateEmail(emailInput.value.trim())) {
+          emailInput.classList.add('error'); emailError.textContent = 'Format email tidak valid'; valid = false;
+        }
+        if (!phoneInput.value.trim()) {
+          phoneInput.classList.add('error'); phoneError.textContent = 'Nomor telepon harus diisi'; valid = false;
+        } else if (!validatePhone(phoneInput.value.trim())) {
+          phoneInput.classList.add('error'); phoneError.textContent = 'Format nomor tidak valid'; valid = false;
+        }
+        if (!passwordInput.value) {
+          passwordInput.classList.add('error'); passwordError.textContent = 'Password harus diisi'; valid = false;
+        } else if (passwordInput.value.length < 6) {
+          passwordInput.classList.add('error'); passwordError.textContent = 'Password minimal 6 karakter'; valid = false;
+        }
+        if (!confirmInput.value) {
+          confirmInput.classList.add('error'); confirmError.textContent = 'Konfirmasi password harus diisi'; valid = false;
+        } else if (confirmInput.value !== passwordInput.value) {
+          confirmInput.classList.add('error'); confirmError.textContent = 'Password tidak cocok'; valid = false;
+        }
+        if (!termsCheck.checked) {
+          termsError.textContent = 'Anda harus menyetujui syarat & ketentuan'; valid = false;
+        } else {
+          termsError.textContent = '';
+        }
+        if (!valid) return;
+
+        // Loading state
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="loading-spinner"><span class="spinner"></span> Mendaftarkan...</span>';
+
+        const result = Auth.register({
+          name: nameInput.value.trim(),
+          email: emailInput.value.trim(),
+          password: passwordInput.value,
+          phone: phoneInput.value.trim()
+        });
+
+        setTimeout(function () {
+          if (result.success) {
+            showAlert('success', 'Pendaftaran berhasil! Mengalihkan...');
+            setTimeout(function () {
+              window.location.href = '../../index.html';
+            }, 800);
+          } else {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = 'Daftar';
+            showAlert('error', result.message);
+            if (result.message.includes('Email')) {
+              emailInput.classList.add('error');
+            }
+          }
+        }, 600);
+      });
+
+      function showAlert(type, message) {
+        const icon = type === 'success' ? '✅' : '❌';
+        alertContainer.innerHTML =
+          '<div class="alert alert-' + type + '">' +
+          '<span class="alert-icon">' + icon + '</span>' +
+          '<span class="alert-body">' + message + '</span>' +
+          '</div>';
+      }
+    });
+  </script>
+</body>
+</html>

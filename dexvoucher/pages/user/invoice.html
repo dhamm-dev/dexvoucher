@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Invoice — DexVoucher</title>
+  <meta name="description" content="Detail transaksi top up game Anda.">
+  <link rel="stylesheet" href="../../assets/css/main.css">
+  <style>
+    .invoice-page { padding-top: calc(var(--navbar-height) + 32px); padding-bottom: 60px; }
+    .invoice-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 40px;
+      max-width: 680px;
+      margin: 0 auto;
+    }
+    .invoice-header {
+      text-align: center;
+      padding-bottom: 24px;
+      border-bottom: 2px dashed var(--border);
+      margin-bottom: 24px;
+    }
+    .invoice-header h1 { font-size: 1.5rem; margin-bottom: 4px; }
+    .invoice-number {
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+    .invoice-status { margin: 12px 0; }
+    .invoice-section { margin-bottom: 20px; }
+    .invoice-section h3 {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+    }
+    .invoice-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      font-size: 0.9rem;
+    }
+    .invoice-row.total {
+      font-weight: 700;
+      font-size: 1.1rem;
+      border-top: 1px solid var(--border);
+      padding-top: 12px;
+      margin-top: 8px;
+    }
+    .invoice-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      font-size: 0.88rem;
+    }
+    .invoice-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin-top: 32px;
+      flex-wrap: wrap;
+    }
+    .invoice-loading {
+      text-align: center;
+      padding: 60px 20px;
+    }
+  </style>
+</head>
+<body>
+  <div id="navbar-container"></div>
+
+  <div class="invoice-page">
+    <div class="container">
+      <div id="invoice-container">
+        <div class="invoice-loading">
+          <div class="spinner spinner-lg" style="margin:0 auto 16px"></div>
+          <p style="color:var(--text-muted)">Memuat invoice...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../../assets/js/utils.js"></script>
+  <script src="../../assets/js/storage.js"></script>
+  <script src="../../assets/js/theme.js"></script>
+  <script src="../../data/seed.js"></script>
+  <script src="../../assets/js/auth.js"></script>
+  <script src="../../assets/js/cart.js"></script>
+  <script src="../../assets/js/promo.js"></script>
+  <script src="../../assets/js/transaction.js"></script>
+  <script src="../../assets/js/navbar.js"></script>
+  <script src="../../assets/js/checkout.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      ThemeManager.init();
+      if (typeof Seed !== 'undefined') Seed.init();
+      Auth.requireAuth();
+      Navbar.render();
+
+      const container = document.getElementById('invoice-container');
+
+      // Ambil ID dari URL
+      const params = new URLSearchParams(window.location.search);
+      const trxId = params.get('id');
+
+      if (!trxId) {
+        container.innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><h3>ID Transaksi tidak ditemukan</h3><p>Pastikan URL invoice valid</p><a href="../../index.html" class="btn btn-primary">Kembali ke Home</a></div>';
+        return;
+      }
+
+      const transaction = Transaction.getById(trxId);
+      if (!transaction) {
+        container.innerHTML = '<div class="empty-state"><div class="empty-icon">❌</div><h3>Transaksi tidak ditemukan</h3><p>Invoice tidak tersedia atau telah dihapus</p><a href="../../index.html" class="btn btn-primary">Kembali ke Home</a></div>';
+        return;
+      }
+
+      // Cek kepemilikan
+      const session = Auth.getSession();
+      if (transaction.userId !== session.id && session.role !== 'admin') {
+        container.innerHTML = '<div class="empty-state"><div class="empty-icon">🔒</div><h3>Akses Ditolak</h3><p>Anda tidak memiliki akses ke invoice ini</p><a href="../../index.html" class="btn btn-primary">Kembali ke Home</a></div>';
+        return;
+      }
+
+      const statusBadge = transaction.status === 'success' ? 'badge-success'
+        : transaction.status === 'failed' ? 'badge-failed' : 'badge-pending';
+      const statusLabel = transaction.status === 'success' ? 'Berhasil'
+        : transaction.status === 'failed' ? 'Gagal' : 'Menunggu';
+
+      container.innerHTML = `
+        <div class="invoice-card">
+          <div class="invoice-header">
+            <h1>Invoice</h1>
+            <div class="invoice-number">${transaction.id}</div>
+            <div class="invoice-status">
+              <span class="badge ${statusBadge}" style="font-size:0.85rem;padding:4px 16px">${statusLabel}</span>
+            </div>
+            <div style="font-size:0.8rem;color:var(--text-muted);margin-top:4px">${formatDate(transaction.createdAt)}</div>
+          </div>
+
+          <div class="invoice-section">
+            <h3>Detail Pemesan</h3>
+            <div class="invoice-row">
+              <span style="color:var(--text-secondary)">User ID</span>
+              <span>${transaction.userId}</span>
+            </div>
+            <div class="invoice-row">
+              <span style="color:var(--text-secondary)">ID Akun Game</span>
+              <span>${transaction.accountId || '-'}</span>
+            </div>
+            <div class="invoice-row">
+              <span style="color:var(--text-secondary)">Metode Bayar</span>
+              <span>${transaction.paymentMethod || '-'}</span>
+            </div>
+          </div>
+
+          <div class="invoice-section">
+            <h3>Item Dibeli</h3>
+            ${transaction.items.map(item => `
+              <div class="invoice-item">
+                <span>${item.name} x ${item.qty || 1}</span>
+                <span>${formatRupiah(item.price * (item.qty || 1))}</span>
+              </div>
+            `).join('')}
+          </div>
+
+          <div class="invoice-section">
+            <div class="invoice-row">
+              <span style="color:var(--text-secondary)">Subtotal</span>
+              <span>${formatRupiah(transaction.subtotal)}</span>
+            </div>
+            ${transaction.discount > 0 ? `
+            <div class="invoice-row">
+              <span style="color:var(--success)">Diskon ${transaction.promoCode ? '(' + transaction.promoCode + ')' : ''}</span>
+              <span style="color:var(--success)">- ${formatRupiah(transaction.discount)}</span>
+            </div>
+            ` : ''}
+            <div class="invoice-row total">
+              <span>Total</span>
+              <span>${formatRupiah(transaction.total)}</span>
+            </div>
+          </div>
+
+          <div class="invoice-actions">
+            <button class="btn btn-primary" id="print-btn">🖨️ Download Invoice</button>
+            <a href="../../index.html" class="btn btn-secondary">🏠 Kembali ke Home</a>
+            <a href="history.html" class="btn btn-outline">📜 Lihat Riwayat</a>
+          </div>
+        </div>
+      `;
+
+      // Print / download
+      document.getElementById('print-btn').addEventListener('click', function () {
+        window.print();
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profil — DexVoucher</title>
+  <link rel="stylesheet" href="../../assets/css/main.css">
+  <style>
+    .profile-page { padding-top: calc(var(--navbar-height) + 32px); padding-bottom: 60px; }
+    .profile-avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--accent);
+      background: var(--bg-hover);
+    }
+    .profile-avatar-placeholder {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: var(--gradient);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    .stat-mini {
+      text-align: center;
+      padding: 16px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+    }
+    .stat-mini .stat-value { font-size: 1.5rem; font-weight: 700; }
+    .stat-mini .stat-label { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; }
+  </style>
+</head>
+<body>
+  <div id="navbar-container"></div>
+  <div class="profile-page">
+    <div class="container" style="max-width:700px">
+      <div class="page-header">
+        <h1>Profil Saya</h1>
+      </div>
+
+      <div id="alert-container"></div>
+
+      <!-- Info & Avatar -->
+      <div class="card" style="margin-bottom:20px">
+        <div class="flex items-center gap-lg" style="flex-wrap:wrap">
+          <div id="avatar-container">
+            <div class="profile-avatar-placeholder" id="avatar-placeholder">D</div>
+            <img class="profile-avatar" id="avatar-img" style="display:none" alt="Avatar">
+          </div>
+          <div style="flex:1">
+            <h2 id="profile-name" style="font-size:1.25rem">-</h2>
+            <p style="color:var(--text-secondary);font-size:0.9rem" id="profile-email">-</p>
+            <p style="color:var(--text-muted);font-size:0.82rem" id="profile-joined">-</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Statistik -->
+      <div class="grid grid-3 gap-md" style="margin-bottom:20px">
+        <div class="stat-mini">
+          <div class="stat-value" id="stat-transactions">0</div>
+          <div class="stat-label">Total Transaksi</div>
+        </div>
+        <div class="stat-mini">
+          <div class="stat-value" id="stat-spending">Rp 0</div>
+          <div class="stat-label">Total Pengeluaran</div>
+        </div>
+        <div class="stat-mini">
+          <div class="stat-value" id="stat-phone">-</div>
+          <div class="stat-label">Nomor Telepon</div>
+        </div>
+      </div>
+
+      <!-- Edit Profil -->
+      <div class="card" style="margin-bottom:20px">
+        <h3 style="margin-bottom:16px">Edit Profil</h3>
+        <form id="edit-profile-form">
+          <div class="form-group input-group">
+            <label for="edit-name">Nama Lengkap</label>
+            <input type="text" id="edit-name" class="input-field" required>
+          </div>
+          <div class="form-group input-group">
+            <label for="edit-phone">Nomor Telepon</label>
+            <input type="tel" id="edit-phone" class="input-field" required>
+          </div>
+          <div class="form-group input-group">
+            <label for="edit-avatar">Foto Profil</label>
+            <input type="file" id="edit-avatar" class="input-field" accept="image/*">
+            <span style="font-size:0.78rem;color:var(--text-muted)">Format: JPG, PNG. Maks 2MB</span>
+          </div>
+          <button type="submit" class="btn btn-primary">Simpan Profil</button>
+          <span id="edit-profile-status" style="margin-left:12px;font-size:0.85rem"></span>
+        </form>
+      </div>
+
+      <!-- Ganti Password -->
+      <div class="card" style="margin-bottom:20px">
+        <h3 style="margin-bottom:16px">Ganti Password</h3>
+        <form id="change-password-form">
+          <div class="form-group input-group">
+            <label for="old-password">Password Lama</label>
+            <input type="password" id="old-password" class="input-field" required>
+          </div>
+          <div class="form-group input-group">
+            <label for="new-password">Password Baru</label>
+            <input type="password" id="new-password" class="input-field" placeholder="Minimal 6 karakter" required>
+            <span class="input-error" id="new-pw-error"></span>
+          </div>
+          <div class="form-group input-group">
+            <label for="confirm-password">Konfirmasi Password Baru</label>
+            <input type="password" id="confirm-password" class="input-field" required>
+            <span class="input-error" id="confirm-pw-error"></span>
+          </div>
+          <button type="submit" class="btn btn-primary">Ganti Password</button>
+          <span id="change-pw-status" style="margin-left:12px;font-size:0.85rem"></span>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="../../assets/js/utils.js"></script>
+  <script src="../../assets/js/storage.js"></script>
+  <script src="../../assets/js/theme.js"></script>
+  <script src="../../assets/js/auth.js"></script>
+  <script src="../../assets/js/transaction.js"></script>
+  <script src="../../assets/js/navbar.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      ThemeManager.init();
+      Auth.requireAuth();
+      Navbar.render();
+
+      const session = Auth.getSession();
+      const users = Storage.getUsers();
+      let user = users.find(u => u.id === session.id);
+      if (!user) return;
+
+      function loadProfile() {
+        document.getElementById('profile-name').textContent = user.name;
+        document.getElementById('profile-email').textContent = user.email;
+        document.getElementById('profile-joined').textContent = 'Bergabung ' + formatDate(user.createdAt);
+        document.getElementById('edit-name').value = user.name;
+        document.getElementById('edit-phone').value = user.phone || '';
+        document.getElementById('stat-phone').textContent = user.phone || '-';
+
+        if (user.avatar) {
+          const img = document.getElementById('avatar-img');
+          img.src = user.avatar;
+          img.style.display = 'block';
+          document.getElementById('avatar-placeholder').style.display = 'none';
+        } else {
+          document.getElementById('avatar-placeholder').textContent = user.name.charAt(0).toUpperCase();
+          document.getElementById('avatar-placeholder').style.display = 'flex';
+          document.getElementById('avatar-img').style.display = 'none';
+        }
+
+        // Statistik
+        const trxs = Transaction.getByUser(user.id);
+        document.getElementById('stat-transactions').textContent = trxs.length;
+        const total = trxs.filter(t => t.status === 'success').reduce((sum, t) => sum + (t.total || 0), 0);
+        document.getElementById('stat-spending').textContent = formatRupiah(total);
+      }
+
+      loadProfile();
+
+      // Edit profil
+      document.getElementById('edit-profile-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const name = document.getElementById('edit-name').value.trim();
+        const phone = document.getElementById('edit-phone').value.trim();
+        const avatarFile = document.getElementById('edit-avatar').files[0];
+        const status = document.getElementById('edit-profile-status');
+
+        if (name.length < 2) { status.textContent = 'Nama minimal 2 karakter'; status.style.color = 'var(--danger)'; return; }
+
+        const processUpdate = function (avatarBase64) {
+          const usersAll = Storage.getUsers();
+          const idx = usersAll.findIndex(u => u.id === user.id);
+          if (idx === -1) return;
+          usersAll[idx].name = name;
+          usersAll[idx].phone = phone;
+          if (avatarBase64) usersAll[idx].avatar = avatarBase64;
+          Storage.setUsers(usersAll);
+          user = usersAll[idx];
+
+          // Update session juga
+          Storage.setSession({
+            id: user.id, name: user.name, email: user.email,
+            phone: user.phone, avatar: user.avatar, role: user.role,
+            createdAt: user.createdAt
+          });
+
+          status.textContent = '✅ Profil berhasil disimpan';
+          status.style.color = 'var(--success)';
+          loadProfile();
+          Navbar.render();
+        };
+
+        if (avatarFile) {
+          if (avatarFile.size > 2 * 1024 * 1024) {
+            status.textContent = 'Ukuran file maksimal 2MB'; status.style.color = 'var(--danger)'; return;
+          }
+          const reader = new FileReader();
+          reader.onload = function (ev) { processUpdate(ev.target.result); };
+          reader.readAsDataURL(avatarFile);
+        } else {
+          processUpdate(null);
+        }
+      });
+
+      // Ganti password
+      document.getElementById('change-password-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const oldPw = document.getElementById('old-password').value;
+        const newPw = document.getElementById('new-password').value;
+        const confirmPw = document.getElementById('confirm-password').value;
+        const status = document.getElementById('change-pw-status');
+        const newPwError = document.getElementById('new-pw-error');
+        const confirmPwError = document.getElementById('confirm-pw-error');
+        newPwError.textContent = '';
+        confirmPwError.textContent = '';
+
+        if (simpleHash(oldPw) !== user.password) {
+          status.textContent = 'Password lama salah'; status.style.color = 'var(--danger)'; return;
+        }
+        if (newPw.length < 6) {
+          newPwError.textContent = 'Password minimal 6 karakter'; return;
+        }
+        if (newPw !== confirmPw) {
+          confirmPwError.textContent = 'Password tidak cocok'; return;
+        }
+
+        const usersAll = Storage.getUsers();
+        const idx = usersAll.findIndex(u => u.id === user.id);
+        if (idx === -1) return;
+        usersAll[idx].password = simpleHash(newPw);
+        Storage.setUsers(usersAll);
+        user = usersAll[idx];
+
+        status.textContent = '✅ Password berhasil diganti';
+        status.style.color = 'var(--success)';
+        document.getElementById('old-password').value = '';
+        document.getElementById('new-password').value = '';
+        document.getElementById('confirm-password').value = '';
+      });
+    });
+  </script>
+</body>
+</html>

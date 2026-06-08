@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tentang DexVoucher</title>
+  <meta name="description" content="Tentang DexVoucher — platform top up game Indonesia terpercaya.">
+  <link rel="stylesheet" href="../../assets/css/main.css">
+  <style>
+    .about-page { padding-top: calc(var(--navbar-height) + 32px); padding-bottom: 60px; }
+    .about-hero { text-align: center; padding: 40px 0; }
+    .about-hero h1 { font-size: 2rem; margin-bottom: 12px; }
+    .about-hero p { color: var(--text-secondary); max-width: 600px; margin: 0 auto; font-size: 1rem; }
+    .team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; }
+    .team-card { text-align: center; padding: 24px 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); transition: var(--transition); }
+    .team-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+    .team-avatar { width: 64px; height: 64px; border-radius: 50%; background: var(--gradient); display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 1.5rem; font-weight: 700; color: #fff; }
+    .team-card h4 { font-size: 0.95rem; margin-bottom: 2px; }
+    .team-card p { font-size: 0.82rem; color: var(--text-muted); }
+    .faq-item { padding: 16px 0; border-bottom: 1px solid var(--border); cursor: pointer; }
+    .faq-item:last-child { border-bottom: none; }
+    .faq-question { display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 0.95rem; }
+    .faq-answer { margin-top: 8px; color: var(--text-secondary); font-size: 0.88rem; display: none; }
+    .faq-answer.open { display: block; }
+    .contact-list { display: flex; flex-direction: column; gap: 12px; }
+    .contact-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); }
+    .contact-item .icon { font-size: 1.5rem; }
+  </style>
+</head>
+<body>
+  <div id="navbar-container"></div>
+  <div class="about-page">
+    <div class="container" style="max-width:800px">
+      <div class="about-hero">
+        <h1>Tentang DexVoucher</h1>
+        <p>Platform top up game Indonesia yang cepat, murah, dan terpercaya. Melayani 8 game populer dengan proses instan dan customer service 24/7.</p>
+      </div>
+
+      <!-- Cerita -->
+      <div class="card" style="margin-bottom:32px">
+        <h3 style="margin-bottom:12px">Cerita Kami</h3>
+        <p style="color:var(--text-secondary);line-height:1.8">
+          DexVoucher lahir dari kebutuhan para gamer Indonesia akan platform top up yang cepat, aman, dan terjangkau. 
+          Kami memahami betapa pentingnya proses yang lancar saat ingin menikmati game favorit — itulah mengapa kami 
+          hadir dengan sistem otomatis yang memastikan item langsung masuk ke akun game Anda dalam hitungan menit.
+        </p>
+        <p style="color:var(--text-secondary);line-height:1.8;margin-top:12px">
+          Berawal dari tahun 2024, DexVoucher telah melayani ribuan pelanggan di seluruh Indonesia dan terus berkembang 
+          untuk mendukung lebih banyak game dan metode pembayaran. Komitmen kami sederhana: harga transparan, proses cepat, 
+          dan dukungan pelanggan yang ramah.
+        </p>
+      </div>
+
+      <!-- Tim -->
+      <h3 style="margin-bottom:16px">Tim Kami</h3>
+      <div class="team-grid" style="margin-bottom:32px">
+        <div class="team-card"><div class="team-avatar">A</div><h4>Andi Pratama</h4><p>Founder & CEO</p></div>
+        <div class="team-card"><div class="team-avatar">B</div><h4>Bella Kusuma</h4><p>CTO</p></div>
+        <div class="team-card"><div class="team-avatar">C</div><h4>Citra Dewi</h4><p>Head of Product</p></div>
+        <div class="team-card"><div class="team-avatar">D</div><h4>Dimas Saputra</h4><p>Customer Support</p></div>
+        <div class="team-card"><div class="team-avatar">E</div><h4>Erika Wijaya</h4><p>Marketing Lead</p></div>
+      </div>
+
+      <!-- Kontak -->
+      <h3 style="margin-bottom:16px">Hubungi Kami</h3>
+      <div class="contact-list" style="margin-bottom:32px">
+        <div class="contact-item"><span class="icon">📧</span><div><div style="font-weight:600">Email</div><div style="font-size:0.85rem;color:var(--text-secondary)">support@dexvoucher.com</div></div></div>
+        <div class="contact-item"><span class="icon">💬</span><div><div style="font-weight:600">WhatsApp</div><div style="font-size:0.85rem;color:var(--text-secondary)">+62 812-3456-7890</div></div></div>
+        <div class="contact-item"><span class="icon">📘</span><div><div style="font-weight:600">Facebook</div><div style="font-size:0.85rem;color:var(--text-secondary)">/dexvoucher</div></div></div>
+        <div class="contact-item"><span class="icon">📸</span><div><div style="font-weight:600">Instagram</div><div style="font-size:0.85rem;color:var(--text-secondary)">@dexvoucher</div></div></div>
+      </div>
+
+      <!-- FAQ -->
+      <h3 style="margin-bottom:16px">FAQ — Pertanyaan Umum</h3>
+      <div class="card" id="faq-section">
+        <div class="faq-item" data-faq="1">
+          <div class="faq-question">Bagaimana cara top up? <span style="font-size:1.25rem;color:var(--text-muted)">+</span></div>
+          <div class="faq-answer">Pilih game favorit Anda, tentukan item yang diinginkan, masukkan ID akun game, pilih metode pembayaran, dan selesaikan pembayaran. Item akan langsung masuk ke akun Anda dalam hitungan menit.</div>
+        </div>
+        <div class="faq-item" data-faq="2">
+          <div class="faq-question">Berapa lama proses top up? <span style="font-size:1.25rem;color:var(--text-muted)">+</span></div>
+          <div class="faq-answer">Proses top up biasanya memakan waktu 1-5 menit setelah pembayaran berhasil diverifikasi. Jika lebih dari 30 menit belum masuk, silakan hubungi customer support kami.</div>
+        </div>
+        <div class="faq-item" data-faq="3">
+          <div class="faq-question">Apakah data saya aman? <span style="font-size:1.25rem;color:var(--text-muted)">+</span></div>
+          <div class="faq-answer">Tentu. Kami tidak menyimpan password game Anda. Cukup masukkan User ID yang diperlukan untuk proses pengiriman item. Seluruh transaksi dienkripsi dan data pribadi Anda dilindungi.</div>
+        </div>
+        <div class="faq-item" data-faq="4">
+          <div class="faq-question">Pembayaran apa saja yang tersedia? <span style="font-size:1.25rem;color:var(--text-muted)">+</span></div>
+          <div class="faq-answer">Kami mendukung berbagai metode pembayaran: Transfer Bank (BCA, Mandiri, BRI), QRIS, GoPay, DANA, dan OVO.</div>
+        </div>
+        <div class="faq-item" data-faq="5">
+          <div class="faq-question">Bagaimana jika item tidak masuk? <span style="font-size:1.25rem;color:var(--text-muted)">+</span></div>
+          <div class="faq-answer">Jika item belum masuk setelah 30 menit, segera hubungi kami melalui WhatsApp atau email. Kami akan mengecek dan menyelesaikan masalah Anda secepat mungkin.</div>
+        </div>
+        <div class="faq-item" data-faq="6">
+          <div class="faq-question">Apa itu kode promo? <span style="font-size:1.25rem;color:var(--text-muted)">+</span></div>
+          <div class="faq-answer">Kode promo adalah kode diskon yang bisa Anda gunakan saat checkout untuk mendapatkan potongan harga. Setiap kode memiliki syarat dan ketentuan serta masa berlaku tertentu.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../../assets/js/utils.js"></script>
+  <script src="../../assets/js/storage.js"></script>
+  <script src="../../assets/js/theme.js"></script>
+  <script src="../../assets/js/auth.js"></script>
+  <script src="../../assets/js/navbar.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      ThemeManager.init();
+      Navbar.render();
+
+      // FAQ accordion
+      document.querySelectorAll('.faq-item').forEach(item => {
+        item.addEventListener('click', function () {
+          const answer = this.querySelector('.faq-answer');
+          const icon = this.querySelector('.faq-question span');
+          const isOpen = answer.classList.contains('open');
+          document.querySelectorAll('.faq-answer').forEach(a => a.classList.remove('open'));
+          document.querySelectorAll('.faq-item span').forEach(s => s.textContent = '+');
+          if (!isOpen) {
+            answer.classList.add('open');
+            icon.textContent = '−';
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>

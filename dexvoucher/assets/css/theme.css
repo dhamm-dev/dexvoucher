@@ -1,0 +1,56 @@
+@charset "UTF-8";
+
+/* ===== DARK MODE (default) ===== */
+[data-theme="dark"] {
+  --bg-primary: #0d0d0d;
+  --bg-secondary: #161616;
+  --bg-card: #1e1e1e;
+  --bg-hover: #252525;
+  --border: #2a2a2a;
+  --text-primary: #f0f0f0;
+  --text-secondary: #a0a0a0;
+  --text-muted: #555555;
+  --accent: #6c63ff;
+  --accent-hover: #574fd6;
+  --accent-glow: rgba(108, 99, 255, 0.25);
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --info: #3b82f6;
+  --gradient: linear-gradient(135deg, #6c63ff, #a855f7);
+}
+
+/* ===== LIGHT MODE ===== */
+[data-theme="light"] {
+  --bg-primary: #f5f5f5;
+  --bg-secondary: #ffffff;
+  --bg-card: #ffffff;
+  --bg-hover: #f0f0f0;
+  --border: #e0e0e0;
+  --text-primary: #111111;
+  --text-secondary: #555555;
+  --text-muted: #aaaaaa;
+  --accent: #6c63ff;
+  --accent-hover: #574fd6;
+  --accent-glow: rgba(108, 99, 255, 0.15);
+  --success: #16a34a;
+  --warning: #d97706;
+  --danger: #dc2626;
+  --info: #2563eb;
+  --gradient: linear-gradient(135deg, #6c63ff, #a855f7);
+}
+
+/* ===== SPACING & TYPOGRAPHY ===== */
+:root {
+  --font-main: 'Inter', 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-full: 9999px;
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.15);
+  --shadow-md: 0 4px 20px rgba(0,0,0,0.2);
+  --shadow-lg: 0 8px 40px rgba(0,0,0,0.3);
+  --transition: all 0.25s ease;
+  --navbar-height: 64px;
+}

@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DexVoucher — Top Up Game Tercepat & Terpercaya</title>
+  <meta name="description" content="Top up game favorit Anda di DexVoucher. Proses cepat, harga murah, 24/7 support.">
+  <meta name="theme-color" content="#6c63ff">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="DexVoucher — Top Up Game Indonesia">
+  <meta property="og:description" content="Top up Free Fire, Mobile Legends, Valorant, PUBG, dan game lainnya.">
+  <meta property="og:type" content="website">
+
+  <!-- PWA Meta -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="DexVoucher">
+  <link rel="manifest" href="/dexvoucher/manifest.json">
+
+  <link rel="stylesheet" href="assets/css/main.css">
+  <style>
+    /* ===== Floating Particles ===== */
+    .hero-particles {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .hero-particle {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 50%;
+      animation: float linear infinite;
+    }
+    @keyframes float {
+      0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateY(-100px) rotate(720deg); opacity: 0; }
+    }
+
+    /* ===== Game Card ===== */
+    .game-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 24px 16px;
+      text-align: center;
+      transition: var(--transition);
+      cursor: pointer;
+    }
+    .game-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--accent);
+    }
+    .game-card .game-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 12px;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    .game-card h3 { font-size: 0.95rem; margin-bottom: 12px; }
+    .game-icon img, .hero-game-icon img { display:block; }
+
+    /* ===== Steps ===== */
+    .step-card {
+      text-align: center;
+      padding: 32px 20px;
+    }
+    .step-number {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--gradient);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin: 0 auto 16px;
+    }
+
+    /* ===== Promo Banner ===== */
+    .promo-banner {
+      background: var(--gradient);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .promo-banner .promo-text h3 {
+      color: #fff;
+      font-size: 1.25rem;
+      margin-bottom: 4px;
+    }
+    .promo-banner .promo-text p {
+      color: rgba(255,255,255,0.8);
+      font-size: 0.9rem;
+    }
+    .promo-banner .promo-code {
+      background: rgba(255,255,255,0.15);
+      padding: 8px 20px;
+      border-radius: var(--radius-full);
+      color: #fff;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 1.1rem;
+      letter-spacing: 2px;
+    }
+
+    /* ===== Keunggulan ===== */
+    .unggul-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 28px 20px;
+      text-align: center;
+      transition: var(--transition);
+    }
+    .unggul-card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+    .unggul-card .unggul-icon {
+      font-size: 2.5rem;
+      margin-bottom: 12px;
+    }
+    .unggul-card h3 { font-size: 1rem; margin-bottom: 8px; }
+    .unggul-card p { font-size: 0.85rem; color: var(--text-secondary); }
+
+    /* ===== Hero ===== */
+    .hero {
+      padding: 140px 0 100px;
+      background: var(--gradient);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-game-icons {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 32px;
+      flex-wrap: wrap;
+      position: relative;
+    }
+    .hero-game-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #fff;
+      opacity: 0.9;
+      transition: var(--transition);
+    }
+    .hero-game-icon:hover {
+      opacity: 1;
+      transform: scale(1.15);
+    }
+
+    /* ===== Cookie ===== */
+    .cookie-banner {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--bg-card);
+      border-top: 1px solid var(--border);
+      padding: 16px 24px;
+      z-index: 200;
+      display: none;
+      animation: slideUp 0.3s ease;
+    }
+    .cookie-banner.show { display: block; }
+
+    /* ===== Loading Screen ===== */
+    .loading-screen {
+      position: fixed;
+      inset: 0;
+      background: var(--bg-primary);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease;
+    }
+    .loading-screen.loaded {
+      opacity: 0;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <!-- Loading Screen -->
+  <div class="loading-screen" id="loading-screen">
+    <h2 style="font-size:2rem;font-weight:700;margin-bottom:8px">DexVoucher</h2>
+    <p style="color:var(--text-muted);margin-bottom:24px">Memuat...</p>
+    <div class="spinner spinner-lg"></div>
+  </div>
+
+  <!-- Navbar Container -->
+  <div id="navbar-container"></div>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-particles" id="hero-particles"></div>
+    <div class="container" style="position:relative">
+      <h1 class="animate-slideUp">Top Up Game <span style="background:rgba(255,255,255,0.15);padding:0 8px;border-radius:4px">Tercepat</span> & Terpercaya</h1>
+      <p class="animate-slideUp" style="animation-delay:0.1s">Nikmati kemudahan top up game favoritmu dengan harga termurah, proses instan, dan customer service 24/7.</p>
+      <a href="#games" class="btn btn-lg" style="background:#fff;color:#6c63ff;font-weight:700;animation:slideUp 0.4s ease 0.2s both">
+        🎮 Top Up Sekarang
+      </a>
+      <div class="hero-game-icons animate-slideUp" style="animation-delay:0.3s">
+        <div class="hero-game-icon" style="background:#FF6B35"><img src="assets/images/logo/Free Fire.png" alt="Free Fire" style="width:100%;height:100%;object-fit:contain;border-radius:inherit"></div>
+        <div class="hero-game-icon" style="background:#1E90FF"><img src="assets/images/logo/Mobile_Legend.jpg" alt="Mobile Legends" style="width:100%;height:100%;object-fit:contain;border-radius:inherit"></div>
+        <div class="hero-game-icon" style="background:#FF4655"><img src="assets/images/logo/Valorant.png" alt="Valorant" style="width:100%;height:100%;object-fit:contain;border-radius:inherit"></div>
+        <div class="hero-game-icon" style="background:#F5A623"><img src="assets/images/logo/PUBGM.jpg" alt="PUBG Mobile" style="width:100%;height:100%;object-fit:contain;border-radius:inherit"></div>
+        <div class="hero-game-icon" style="background:#9B59B6"><img src="assets/images/logo/AOV.png" alt="AOV" style="width:100%;height:100%;object-fit:contain;border-radius:inherit"></div>
+        <div class="hero-game-icon" style="background:#4A9EFF"><img src="assets/images/logo/Genshin_Impact.jpg" alt="Genshin Impact" style="width:100%;height:100%;object-fit:contain;border-radius:inherit"></div>
+        <div class="hero-game-icon" style="background:#C0A0FF"><img src="assets/images/logo/Honkai_Star_rail.jpg" alt="Honkai Star Rail" style="width:100%;height:100%;object-fit:contain;border-radius:inherit"></div>
+        <div class="hero-game-icon" style="background:#27AE60"><img src="assets/images/logo/Clash_of_clans.jpg" alt="Clash of Clans" style="width:100%;height:100%;object-fit:contain;border-radius:inherit"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pilih Game -->
+  <section class="section" id="games">
+    <div class="container">
+      <h2 class="section-title">Pilih Game</h2>
+      <p class="section-subtitle">Top up game favoritmu dengan harga terbaik</p>
+      <div class="grid grid-4 gap-lg" id="game-grid"></div>
+    </div>
+  </section>
+
+  <!-- Promo Section -->
+  <section class="section" id="promo-section" style="padding-top:0">
+    <div class="container">
+      <h2 class="section-title">Promo Spesial</h2>
+      <p class="section-subtitle">Jangan lewatkan diskon dan penawaran menarik</p>
+      <div id="promo-container"></div>
+    </div>
+  </section>
+
+  <!-- Cara Pemesanan -->
+  <section class="section" style="background:var(--bg-secondary)">
+    <div class="container">
+      <h2 class="section-title">Cara Pemesanan</h2>
+      <p class="section-subtitle">Hanya 3 langkah mudah untuk top up</p>
+      <div class="grid grid-3 gap-xl">
+        <div class="step-card">
+          <div class="step-number">1</div>
+          <h3>Pilih Game</h3>
+          <p style="color:var(--text-secondary);font-size:0.9rem">Pilih game favoritmu dan tentukan jumlah item yang diinginkan</p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">2</div>
+          <h3>Isi ID Akun</h3>
+          <p style="color:var(--text-secondary);font-size:0.9rem">Masukkan User ID dan Server ID (jika diperlukan) akun gamemu</p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">3</div>
+          <h3>Bayar & Nikmati</h3>
+          <p style="color:var(--text-secondary);font-size:0.9rem">Pilih metode pembayaran, selesaikan pembayaran, dan item langsung masuk</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Keunggulan -->
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">Kenapa Memilih DexVoucher?</h2>
+      <p class="section-subtitle">Kami berkomitmen memberikan pelayanan terbaik untukmu</p>
+      <div class="grid grid-4 gap-lg">
+        <div class="unggul-card">
+          <div class="unggul-icon">⚡</div>
+          <h3>Proses Cepat</h3>
+          <p>Item langsung masuk ke akun game kamu dalam hitungan menit setelah pembayaran</p>
+        </div>
+        <div class="unggul-card">
+          <div class="unggul-icon">💰</div>
+          <h3>Harga Terjangkau</h3>
+          <p>Dapatkan harga termurah dengan promo dan diskon yang selalu update setiap minggu</p>
+        </div>
+        <div class="unggul-card">
+          <div class="unggul-icon">🎧</div>
+          <h3>24/7 Support</h3>
+          <p>Tim customer service kami siap membantu kamu kapan saja melalui WhatsApp dan live chat</p>
+        </div>
+        <div class="unggul-card">
+          <div class="unggul-icon">🔒</div>
+          <h3>Aman & Terpercaya</h3>
+          <p>Transaksi aman terenkripsi dan sudah dipercaya ribuan pelanggan di seluruh Indonesia</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <h3 style="font-size:1.25rem">DexVoucher</h3>
+          <p>Platform top up game Indonesia tercepat, termurah, dan terpercaya. Melayani 8 game populer dengan proses instan.</p>
+          <div class="flex gap-sm" style="margin-top:16px">
+            <a href="#" style="font-size:1.25rem" aria-label="Facebook">📘</a>
+            <a href="#" style="font-size:1.25rem" aria-label="Instagram">📸</a>
+            <a href="#" style="font-size:1.25rem" aria-label="Twitter">🐦</a>
+            <a href="#" style="font-size:1.25rem" aria-label="TikTok">🎵</a>
+          </div>
+        </div>
+        <div class="footer-column">
+          <h4>Game</h4>
+          <a href="/dexvoucher/pages/games/free-fire.html">Free Fire</a>
+          <a href="/dexvoucher/pages/games/mobile-legends.html">Mobile Legends</a>
+          <a href="/dexvoucher/pages/games/valorant.html">Valorant</a>
+          <a href="/dexvoucher/pages/games/pubg-mobile.html">PUBG Mobile</a>
+          <a href="/dexvoucher/pages/games/aov.html">AOV</a>
+          <a href="/dexvoucher/pages/games/genshin-impact.html">Genshin Impact</a>
+          <a href="/dexvoucher/pages/games/honkai-star-rail.html">Honkai Star Rail</a>
+          <a href="/dexvoucher/pages/games/clash-of-clans.html">Clash of Clans</a>
+        </div>
+        <div class="footer-column">
+          <h4>Halaman</h4>
+          <a href="/dexvoucher/pages/user/about.html">Tentang Kami</a>
+          <a href="/dexvoucher/pages/user/history.html">Riwayat</a>
+          <a href="/dexvoucher/pages/user/cart.html">Keranjang</a>
+          <a href="/dexvoucher/pages/user/settings.html">Pengaturan</a>
+        </div>
+        <div class="footer-column">
+          <h4>Kontak</h4>
+          <a href="mailto:support@dexvoucher.com">support@dexvoucher.com</a>
+          <a href="https://wa.me/6281234567890" target="_blank">WhatsApp</a>
+          <a href="/dexvoucher/pages/user/about.html#faq">FAQ</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        &copy; 2025 DexVoucher. Hak Cipta Dilindungi.
+      </div>
+    </div>
+  </footer>
+
+  <!-- Floating WhatsApp -->
+  <a href="https://wa.me/6281234567890" target="_blank" class="whatsapp-float" aria-label="Hubungi WhatsApp">
+    💬
+  </a>
+
+  <!-- Scroll to Top -->
+  <button class="scroll-top" id="scroll-top" aria-label="Scroll ke atas">↑</button>
+
+  <!-- Cookie Banner -->
+  <div class="cookie-banner" id="cookie-banner">
+    <div class="flex items-center justify-between" style="max-width:1200px;margin:0 auto">
+      <p style="font-size:0.85rem;color:var(--text-secondary)">🍪 Kami menggunakan cookie untuk meningkatkan pengalamanmu.</p>
+      <button class="btn btn-primary btn-sm" id="cookie-accept">Setuju</button>
+    </div>
+  </div>
+
+  <script src="assets/js/utils.js"></script>
+  <script src="assets/js/storage.js"></script>
+  <script src="assets/js/theme.js"></script>
+  <script src="data/seed.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/navbar.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Init theme
+      ThemeManager.init();
+
+      // Init seed data
+      if (typeof Seed !== 'undefined') Seed.init();
+
+      // Render navbar
+      Navbar.render();
+
+      // Buat hero particles
+      (function initParticles() {
+        const container = document.getElementById('hero-particles');
+        if (!container) return;
+        for (let i = 0; i < 20; i++) {
+          const p = document.createElement('div');
+          p.className = 'hero-particle';
+          p.style.left = Math.random() * 100 + '%';
+          p.style.width = p.style.height = (2 + Math.random() * 6) + 'px';
+          p.style.animationDuration = (10 + Math.random() * 20) + 's';
+          p.style.animationDelay = (Math.random() * 10) + 's';
+          container.appendChild(p);
+        }
+      })();
+
+      // Render grid game
+      (function renderGames() {
+        const grid = document.getElementById('game-grid');
+        if (!grid) return;
+        const games = [
+          { id: 'free-fire', name: 'Free Fire', color: '#FF6B35', icon: 'FF', logo: 'Free Fire.png' },
+          { id: 'mobile-legends', name: 'Mobile Legends', color: '#1E90FF', icon: 'ML', logo: 'Mobile_Legend.jpg' },
+          { id: 'valorant', name: 'Valorant', color: '#FF4655', icon: 'V', logo: 'Valorant.png' },
+          { id: 'pubg-mobile', name: 'PUBG Mobile', color: '#F5A623', icon: 'P', logo: 'PUBGM.jpg' },
+          { id: 'aov', name: 'AOV', color: '#9B59B6', icon: 'A', logo: 'AOV.png' },
+          { id: 'genshin-impact', name: 'Genshin Impact', color: '#4A9EFF', icon: 'G', logo: 'Genshin_Impact.jpg' },
+          { id: 'honkai-star-rail', name: 'Honkai Star Rail', color: '#C0A0FF', icon: 'H', logo: 'Honkai_Star_rail.jpg' },
+          { id: 'clash-of-clans', name: 'Clash of Clans', color: '#27AE60', icon: 'C', logo: 'Clash_of_clans.jpg' }
+        ];
+        grid.innerHTML = games.map(g => `
+          <div class="game-card" onclick="window.location.href='/dexvoucher/pages/games/${g.id}.html'">
+            <div class="game-icon" style="background:${g.color}"><img src="assets/images/logo/${g.logo}" alt="${g.name}" style="width:100%;height:100%;object-fit:contain;border-radius:inherit"></div>
+            <h3>${g.name}</h3>
+            <span class="btn btn-sm btn-outline">Top Up</span>
+          </div>
+        `).join('');
+      })();
+
+      // Render promo
+      (function renderPromos() {
+        const container = document.getElementById('promo-container');
+        if (!container) return;
+        const promos = Storage.getPromos();
+        const activePromos = promos.filter(p => {
+          if (!p.isActive) return false;
+          const expired = new Date(p.expiredAt);
+          if (expired < new Date()) return false;
+          if (p.quota > 0 && p.used >= p.quota) return false;
+          return true;
+        });
+
+        if (activePromos.length === 0) {
+          container.innerHTML = '<div class="promo-banner" style="background:var(--bg-card);border:1px solid var(--border)"><div class="promo-text"><h3 style="color:var(--text-primary)">Belum ada promo aktif</h3><p style="color:var(--text-secondary)">Nantikan promo spesial dari kami!</p></div></div>';
+          return;
+        }
+
+        container.innerHTML = activePromos.slice(0, 2).map(promo => {
+          const discText = promo.type === 'percent' ? promo.value + '%' : formatRupiah(promo.value);
+          const minText = formatRupiah(promo.minPurchase);
+          return `
+            <div class="promo-banner" style="margin-bottom:16px">
+              <div class="promo-text">
+                <h3>Diskon ${discText}</h3>
+                <p>Min. pembelian ${minText} · ${promo.quota > 0 ? 'Sisa ' + (promo.quota - promo.used) + ' kuota' : 'Kuota tidak terbatas'}</p>
+              </div>
+              <div class="promo-code">${promo.code}</div>
+            </div>
+          `;
+        }).join('');
+      })();
+
+      // Cookie banner
+      (function initCookie() {
+        const banner = document.getElementById('cookie-banner');
+        if (banner && !localStorage.getItem('nxt_cookie_consent')) {
+          banner.classList.add('show');
+          document.getElementById('cookie-accept').addEventListener('click', function () {
+            localStorage.setItem('nxt_cookie_consent', 'true');
+            banner.classList.remove('show');
+          });
+        }
+      })();
+
+      // Scroll to top
+      (function initScrollTop() {
+        const btn = document.getElementById('scroll-top');
+        if (!btn) return;
+        window.addEventListener('scroll', function () {
+          btn.classList.toggle('show', window.scrollY > 300);
+        });
+        btn.addEventListener('click', function () {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      })();
+
+      // Sembunyikan loading screen
+      setTimeout(function () {
+        document.getElementById('loading-screen').classList.add('loaded');
+      }, 400);
+    });
+  </script>
+</body>
+</html>

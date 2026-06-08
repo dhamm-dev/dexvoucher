@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Riwayat Transaksi — DexVoucher</title>
+  <link rel="stylesheet" href="../../assets/css/main.css">
+  <style>
+    .history-page { padding-top: calc(var(--navbar-height) + 32px); padding-bottom: 60px; }
+    .filter-btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
+    .filter-btn {
+      padding: 6px 16px;
+      border-radius: var(--radius-full);
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      transition: var(--transition);
+      cursor: pointer;
+    }
+    .filter-btn:hover { border-color: var(--accent); color: var(--text-primary); }
+    .filter-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .trx-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr auto auto auto;
+      gap: 12px;
+      align-items: center;
+      padding: 14px 16px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      margin-bottom: 8px;
+      transition: var(--transition);
+      font-size: 0.88rem;
+    }
+    .trx-row:hover { box-shadow: var(--shadow-sm); }
+    .trx-id { font-family: var(--font-mono); font-size: 0.82rem; color: var(--text-muted); }
+    .trx-game { font-weight: 500; }
+    .trx-total { font-weight: 600; text-align: right; }
+    .trx-date { font-size: 0.82rem; color: var(--text-secondary); }
+    @media (max-width: 767px) {
+      .trx-row { grid-template-columns: 1fr 1fr; }
+      .trx-row .trx-date,
+      .trx-row .trx-id { grid-column: span 2; }
+    }
+    .modal-detail-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      font-size: 0.88rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .modal-detail-row:last-child { border-bottom: none; }
+  </style>
+</head>
+<body>
+  <div id="navbar-container"></div>
+  <div class="history-page">
+    <div class="container">
+      <div class="page-header">
+        <div>
+          <h1>Riwayat Transaksi</h1>
+          <p>Semua transaksi top up Anda</p>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:20px;align-items:center">
+        <div class="filter-btn-group" id="filter-group">
+          <button class="filter-btn active" data-filter="all">Semua</button>
+          <button class="filter-btn" data-filter="success">Berhasil</button>
+          <button class="filter-btn" data-filter="pending">Menunggu</button>
+          <button class="filter-btn" data-filter="failed">Gagal</button>
+        </div>
+        <div style="flex:1;min-width:200px">
+          <input type="text" id="search-input" class="input-field" placeholder="Cari ID transaksi atau game..." style="font-size:0.85rem">
+        </div>
+      </div>
+
+      <div id="history-list">
+        <div class="empty-state" id="empty-history">
+          <div class="empty-icon">📜</div>
+          <h3>Belum ada transaksi</h3>
+          <p>Yuk, lakukan top up pertama Anda!</p>
+          <a href="../../index.html#games" class="btn btn-primary">Top Up Sekarang</a>
+        </div>
+        <div id="history-items"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../../assets/js/utils.js"></script>
+  <script src="../../assets/js/storage.js"></script>
+  <script src="../../assets/js/theme.js"></script>
+  <script src="../../assets/js/auth.js"></script>
+  <script src="../../assets/js/transaction.js"></script>
+  <script src="../../assets/js/navbar.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      ThemeManager.init();
+      Auth.requireAuth();
+      Navbar.render();
+
+      const session = Auth.getSession();
+      let currentFilter = 'all';
+      let currentSearch = '';
+
+      function renderHistory() {
+        let transactions = Transaction.getByUser(session.id);
+
+        if (currentFilter !== 'all') {
+          transactions = transactions.filter(t => t.status === currentFilter);
+        }
+        if (currentSearch.trim()) {
+          const q = currentSearch.toLowerCase();
+          transactions = transactions.filter(t =>
+            t.id.toLowerCase().includes(q) ||
+            t.items.some(i => i.name.toLowerCase().includes(q)) ||
+            (t.gameId && t.gameId.toLowerCase().includes(q))
+          );
+        }
+
+        const container = document.getElementById('history-items');
+        const empty = document.getElementById('empty-history');
+
+        if (transactions.length === 0) {
+          container.innerHTML = '';
+          empty.style.display = 'flex';
+          return;
+        }
+        empty.style.display = 'none';
+
+        container.innerHTML = transactions.map(t => {
+          const statusBadge = t.status === 'success' ? 'badge-success'
+            : t.status === 'failed' ? 'badge-failed' : 'badge-pending';
+          const statusLabel = t.status === 'success' ? 'Berhasil'
+            : t.status === 'failed' ? 'Gagal' : 'Menunggu';
+          const itemsStr = t.items.map(i => i.name).join(', ');
+          return `
+            <div class="trx-row" data-trx-id="${t.id}">
+              <div>
+                <div class="trx-id">${t.id}</div>
+                <div class="trx-game">${itemsStr}</div>
+              </div>
+              <div class="trx-game" style="font-size:0.82rem;color:var(--text-muted)">${t.accountId || '-'}</div>
+              <div class="trx-total">${formatRupiah(t.total)}</div>
+              <div><span class="badge ${statusBadge}">${statusLabel}</span></div>
+              <div class="trx-date">${formatDate(t.createdAt)}</div>
+              <button class="btn btn-outline btn-sm detail-btn" data-trx-id="${t.id}">Detail</button>
+            </div>
+          `;
+        }).join('');
+
+        // Bind detail buttons
+        document.querySelectorAll('.detail-btn').forEach(btn => {
+          btn.addEventListener('click', function () {
+            const trx = Transaction.getById(this.dataset.trxId);
+            if (trx) showDetailModal(trx);
+          });
+        });
+      }
+
+      function showDetailModal(trx) {
+        const existing = document.querySelector('.modal-overlay');
+        if (existing) existing.remove();
+
+        const statusBadge = trx.status === 'success' ? 'badge-success'
+          : trx.status === 'failed' ? 'badge-failed' : 'badge-pending';
+        const statusLabel = trx.status === 'success' ? 'Berhasil'
+          : trx.status === 'failed' ? 'Gagal' : 'Menunggu';
+
+        const overlay = document.createElement('div');
+        overlay.className = 'modal-overlay';
+        overlay.innerHTML = `
+          <div class="modal" style="max-width:550px">
+            <div class="modal-header">
+              <h3>Detail Transaksi</h3>
+              <button class="modal-close" id="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+              <div style="text-align:center;margin-bottom:16px">
+                <div style="font-family:var(--font-mono);color:var(--text-muted);font-size:0.85rem">${trx.id}</div>
+                <span class="badge ${statusBadge}" style="margin-top:6px">${statusLabel}</span>
+              </div>
+              <div style="font-size:0.85rem;color:var(--text-muted);margin-bottom:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px">Item</div>
+              ${trx.items.map(item => `
+                <div class="modal-detail-row">
+                  <span>${item.name} x ${item.qty || 1}</span>
+                  <span>${formatRupiah(item.price * (item.qty || 1))}</span>
+                </div>
+              `).join('')}
+              <div class="modal-detail-row" style="margin-top:8px">
+                <span style="color:var(--text-secondary)">Subtotal</span>
+                <span>${formatRupiah(trx.subtotal)}</span>
+              </div>
+              ${trx.discount > 0 ? `
+              <div class="modal-detail-row">
+                <span style="color:var(--success)">Diskon ${trx.promoCode ? '(' + trx.promoCode + ')' : ''}</span>
+                <span style="color:var(--success)">- ${formatRupiah(trx.discount)}</span>
+              </div>
+              ` : ''}
+              <div class="modal-detail-row" style="font-weight:700;font-size:1rem;border-top:1px solid var(--border);padding-top:8px;margin-top:4px">
+                <span>Total</span>
+                <span>${formatRupiah(trx.total)}</span>
+              </div>
+              <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
+                <div class="modal-detail-row" style="font-size:0.82rem">
+                  <span style="color:var(--text-muted)">ID Akun</span>
+                  <span>${trx.accountId || '-'}</span>
+                </div>
+                <div class="modal-detail-row" style="font-size:0.82rem">
+                  <span style="color:var(--text-muted)">Metode Bayar</span>
+                  <span>${trx.paymentMethod || '-'}</span>
+                </div>
+                <div class="modal-detail-row" style="font-size:0.82rem">
+                  <span style="color:var(--text-muted)">Tanggal</span>
+                  <span>${formatDate(trx.createdAt)}</span>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-secondary" id="modal-close-btn">Tutup</button>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(overlay);
+
+        overlay.querySelectorAll('#modal-close, #modal-close-btn').forEach(el => {
+          el.addEventListener('click', () => overlay.remove());
+        });
+        overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
+      }
+
+      // Filter buttons
+      document.querySelectorAll('[data-filter]').forEach(btn => {
+        btn.addEventListener('click', function () {
+          document.querySelectorAll('[data-filter]').forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          currentFilter = this.dataset.filter;
+          renderHistory();
+        });
+      });
+
+      // Search
+      document.getElementById('search-input').addEventListener('input', function () {
+        currentSearch = this.value;
+        renderHistory();
+      });
+
+      renderHistory();
+    });
+  </script>
+</body>
+</html>

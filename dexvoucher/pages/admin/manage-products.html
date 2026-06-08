@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kelola Produk — DexVoucher</title>
+  <link rel="stylesheet" href="../../assets/css/main.css">
+</head>
+<body>
+  <div id="admin-layout"></div>
+  <script src="../../assets/js/utils.js"></script>
+  <script src="../../assets/js/storage.js"></script>
+  <script src="../../assets/js/theme.js"></script>
+  <script src="../../assets/js/auth.js"></script>
+  <script src="../../assets/js/transaction.js"></script>
+  <script src="../../assets/js/products.js"></script>
+  <script src="../../assets/js/admin-sidebar.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      ThemeManager.init(); Auth.requireAdmin(); AdminSidebar.render();
+      document.getElementById('breadcrumb').textContent = 'Kelola Produk';
+      const content = document.getElementById('admin-content');
+
+      function render() {
+        let products = Storage.getProducts();
+        const gameFilter = document.getElementById('filter-game')?.value || '';
+        const catFilter = document.getElementById('filter-category')?.value || '';
+        if (gameFilter) products = products.filter(p => p.game === gameFilter);
+        if (catFilter) products = products.filter(p => p.category === catFilter);
+
+        const gameOptions = Object.entries(Products.GAMES).map(([k, v]) => `<option value="${k}">${v.name}</option>`).join('');
+
+        content.innerHTML = `
+          <div class="page-header">
+            <h1>Kelola Produk</h1>
+            <button class="btn btn-primary" id="add-product-btn">+ Tambah Produk</button>
+          </div>
+          <div class="flex gap-md" style="margin-bottom:16px;flex-wrap:wrap">
+            <select class="input-field" id="filter-game" style="width:auto;min-width:160px"><option value="">Semua Game</option>${gameOptions}</select>
+            <select class="input-field" id="filter-category" style="width:auto;min-width:140px"><option value="">Semua Kategori</option><option value="diamond">Diamond</option><option value="membership">Membership</option><option value="voucher">Voucher</option><option value="bundle">Bundle</option></select>
+          </div>
+          <div class="table-wrapper">
+            <table>
+              <thead><tr><th>Nama</th><th>Game</th><th>Kategori</th><th>Harga</th><th>Asli</th><th>Badge</th><th>Status</th><th>Aksi</th></tr></thead>
+              <tbody>${products.map(p => {
+                const game = Products.GAMES[p.game];
+                return `<tr>
+                  <td style="font-weight:500">${p.name}</td>
+                  <td>${game ? game.name : p.game}</td>
+                  <td>${p.category}</td>
+                  <td style="font-weight:600">${formatRupiah(p.price)}</td>
+                  <td style="color:var(--text-muted);text-decoration:line-through">${p.originalPrice > p.price ? formatRupiah(p.originalPrice) : '-'}</td>
+                  <td>${p.badge ? `<span class="badge badge-${p.badge.toLowerCase()}">${p.badge}</span>` : '-'}</td>
+                  <td><span class="badge ${p.isActive ? 'badge-success' : 'badge-failed'}">${p.isActive ? 'Aktif' : 'Nonaktif'}</span></td>
+                  <td>
+                    <div class="flex gap-sm">
+                      <button class="btn btn-outline btn-sm edit-btn" data-id="${p.id}">Edit</button>
+                      <button class="btn btn-danger btn-sm delete-btn" data-id="${p.id}">Hapus</button>
+                      <button class="btn btn-secondary btn-sm toggle-btn" data-id="${p.id}" data-active="${p.isActive}">${p.isActive ? 'Nonaktifkan' : 'Aktifkan'}</button>
+                    </div>
+                  </td>
+                </tr>`;
+              }).join('')}</tbody>
+            </table>
+          </div>
+          <p style="margin-top:12px;color:var(--text-muted);font-size:0.85rem">Total: ${products.length} produk</p>
+        `;
+
+        // Filter events
+        document.getElementById('filter-game').addEventListener('change', render);
+        document.getElementById('filter-category').addEventListener('change', render);
+
+        // Add product
+        document.getElementById('add-product-btn').addEventListener('click', () => showProductModal(null));
+
+        // Edit
+        document.querySelectorAll('.edit-btn').forEach(b => b.addEventListener('click', function () {
+          const p = Storage.getProducts().find(x => x.id === this.dataset.id);
+          if (p) showProductModal(p);
+        }));
+
+        // Delete
+        document.querySelectorAll('.delete-btn').forEach(b => b.addEventListener('click', function () {
+          if (!confirm('Hapus produk ini?')) return;
+          let all = Storage.getProducts();
+          all = all.filter(x => x.id !== this.dataset.id);
+          Storage.setProducts(all);
+          render();
+        }));
+
+        // Toggle active
+        document.querySelectorAll('.toggle-btn').forEach(b => b.addEventListener('click', function () {
+          let all = Storage.getProducts();
+          const idx = all.findIndex(x => x.id === this.dataset.id);
+          if (idx !== -1) { all[idx].isActive = !all[idx].isActive; Storage.setProducts(all); render(); }
+        }));
+      }
+
+      function showProductModal(existing) {
+        const ov = document.querySelector('.modal-overlay'); if (ov) ov.remove();
+        const gameOptions = Object.entries(Products.GAMES).map(([k, v]) => `<option value="${k}" ${existing?.game === k ? 'selected' : ''}>${v.name}</option>`).join('');
+        const overlay = document.createElement('div'); overlay.className = 'modal-overlay';
+        overlay.innerHTML = `
+          <div class="modal" style="max-width:500px">
+            <div class="modal-header"><h3>${existing ? 'Edit Produk' : 'Tambah Produk'}</h3><button class="modal-close" id="modal-close">&times;</button></div>
+            <div class="modal-body">
+              <form id="product-form">
+                <div class="form-group input-group"><label>Nama Produk</label><input type="text" id="f-name" class="input-field" value="${existing?.name || ''}" required></div>
+                <div class="form-row">
+                  <div class="form-group input-group"><label>Game</label><select id="f-game" class="input-field">${gameOptions}</select></div>
+                  <div class="form-group input-group"><label>Kategori</label><select id="f-category" class="input-field"><option value="diamond" ${existing?.category === 'diamond' ? 'selected' : ''}>Diamond</option><option value="membership" ${existing?.category === 'membership' ? 'selected' : ''}>Membership</option><option value="voucher" ${existing?.category === 'voucher' ? 'selected' : ''}>Voucher</option><option value="bundle" ${existing?.category === 'bundle' ? 'selected' : ''}>Bundle</option></select></div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group input-group"><label>Jumlah</label><input type="number" id="f-amount" class="input-field" value="${existing?.amount || 0}" min="0"></div>
+                  <div class="form-group input-group"><label>Harga (Rp)</label><input type="number" id="f-price" class="input-field" value="${existing?.price || ''}" required min="0"></div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group input-group"><label>Harga Asli (coret)</label><input type="number" id="f-original" class="input-field" value="${existing?.originalPrice || ''}" min="0"></div>
+                  <div class="form-group input-group"><label>Badge</label><select id="f-badge" class="input-field"><option value="">Tidak ada</option><option value="HOT" ${existing?.badge === 'HOT' ? 'selected' : ''}>HOT</option><option value="SALE" ${existing?.badge === 'SALE' ? 'selected' : ''}>SALE</option><option value="NEW" ${existing?.badge === 'NEW' ? 'selected' : ''}>NEW</option></select></div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">${existing ? 'Simpan Perubahan' : 'Tambah Produk'}</button>
+              </form>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(overlay);
+        overlay.querySelector('#modal-close').addEventListener('click', () => overlay.remove());
+        overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
+        overlay.querySelector('#product-form').addEventListener('submit', function (e) {
+          e.preventDefault();
+          let all = Storage.getProducts();
+          const data = {
+            name: document.getElementById('f-name').value.trim(),
+            game: document.getElementById('f-game').value,
+            category: document.getElementById('f-category').value,
+            amount: parseInt(document.getElementById('f-amount').value) || 0,
+            price: parseInt(document.getElementById('f-price').value) || 0,
+            originalPrice: parseInt(document.getElementById('f-original').value) || 0,
+            badge: document.getElementById('f-badge').value || null,
+            isActive: true
+          };
+          if (!data.name || !data.price) return;
+
+          if (existing) {
+            const idx = all.findIndex(x => x.id === existing.id);
+            if (idx !== -1) { all[idx] = { ...all[idx], ...data }; }
+          } else {
+            data.id = generateId('prd');
+            data.createdAt = new Date().toISOString();
+            all.push(data);
+          }
+          Storage.setProducts(all);
+          overlay.remove();
+          render();
+        });
+      }
+
+      render();
+    });
+  </script>
+</body>
+</html>

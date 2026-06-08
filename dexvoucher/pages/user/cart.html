@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Keranjang — DexVoucher</title>
+  <meta name="description" content="Keranjang belanja top up game Anda.">
+  <link rel="stylesheet" href="../../assets/css/main.css">
+  <style>
+    .cart-page { padding-top: calc(var(--navbar-height) + 32px); padding-bottom: 60px; }
+    .cart-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 16px 20px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      margin-bottom: 12px;
+      transition: var(--transition);
+      flex-wrap: wrap;
+    }
+    .cart-item:hover { box-shadow: var(--shadow-sm); }
+    .cart-item-info { flex: 1; min-width: 200px; }
+    .cart-item-game { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 2px; }
+    .cart-item-name { font-weight: 600; }
+    .cart-item-account { font-size: 0.8rem; color: var(--text-secondary); }
+    .cart-item-price { font-weight: 700; color: var(--accent); white-space: nowrap; }
+    .cart-summary {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      position: sticky;
+      top: calc(var(--navbar-height) + 32px);
+    }
+    .cart-summary-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      font-size: 0.9rem;
+    }
+    .cart-summary-row.total {
+      font-weight: 700;
+      font-size: 1.1rem;
+      border-top: 1px solid var(--border);
+      padding-top: 12px;
+      margin-top: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div id="navbar-container"></div>
+
+  <div class="cart-page">
+    <div class="container">
+      <div class="page-header">
+        <div>
+          <h1>Keranjang Belanja</h1>
+          <p>Kelola item sebelum checkout</p>
+        </div>
+      </div>
+
+      <div id="alert-container"></div>
+
+      <div class="grid" style="grid-template-columns: 1fr 340px; gap: 24px; align-items: start;">
+        <!-- Daftar item -->
+        <div id="cart-items-container">
+          <div class="empty-state" id="empty-cart">
+            <div class="empty-icon">🛒</div>
+            <h3>Keranjang Kosong</h3>
+            <p>Belum ada item di keranjang. Yuk, top up game favoritmu!</p>
+            <a href="../../index.html#games" class="btn btn-primary">Lihat Game</a>
+          </div>
+          <div id="cart-items-list"></div>
+        </div>
+
+        <!-- Summary -->
+        <div id="cart-summary-container" style="display:none">
+          <div class="cart-summary">
+            <h3 style="margin-bottom:16px">Ringkasan Belanja</h3>
+            <div class="cart-summary-row">
+              <span style="color:var(--text-secondary)">Subtotal</span>
+              <span id="summary-subtotal">Rp 0</span>
+            </div>
+
+            <div class="input-group" style="margin-bottom:12px">
+              <label for="promo-input">Kode Promo</label>
+              <div class="flex gap-sm">
+                <input type="text" id="promo-input" class="input-field" placeholder="Masukkan kode" style="flex:1">
+                <button class="btn btn-outline btn-sm" id="promo-apply-btn">Pakai</button>
+              </div>
+              <span class="input-error" id="promo-error"></span>
+              <span class="input-success" id="promo-success"></span>
+            </div>
+
+            <div class="cart-summary-row" id="discount-row" style="display:none">
+              <span style="color:var(--success)">Diskon</span>
+              <span id="summary-discount" style="color:var(--success)">-Rp 0</span>
+            </div>
+
+            <div class="cart-summary-row total">
+              <span>Total</span>
+              <span id="summary-total">Rp 0</span>
+            </div>
+
+            <button class="btn btn-primary btn-lg btn-block" id="checkout-btn">Lanjut Checkout</button>
+            <a href="../../index.html#games" class="btn btn-secondary btn-block mt-sm">Lanjutkan Belanja</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../../assets/js/utils.js"></script>
+  <script src="../../assets/js/storage.js"></script>
+  <script src="../../assets/js/theme.js"></script>
+  <script src="../../data/seed.js"></script>
+  <script src="../../assets/js/auth.js"></script>
+  <script src="../../assets/js/cart.js"></script>
+  <script src="../../assets/js/promo.js"></script>
+  <script src="../../assets/js/transaction.js"></script>
+  <script src="../../assets/js/navbar.js"></script>
+  <script src="../../assets/js/checkout.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      ThemeManager.init();
+      if (typeof Seed !== 'undefined') Seed.init();
+
+      // Require auth
+      Auth.requireAuth();
+
+      Navbar.render();
+
+      const session = Auth.getSession();
+      let appliedPromo = null;
+      let currentDiscount = 0;
+
+      function renderCart() {
+        const items = Cart.getItems(session.id);
+        const list = document.getElementById('cart-items-list');
+        const empty = document.getElementById('empty-cart');
+        const summary = document.getElementById('cart-summary-container');
+
+        if (items.length === 0) {
+          list.innerHTML = '';
+          empty.style.display = 'flex';
+          summary.style.display = 'none';
+          return;
+        }
+
+        empty.style.display = 'none';
+        summary.style.display = 'block';
+
+        list.innerHTML = items.map(item => {
+          const product = Storage.getProducts().find(p => p.id === item.productId);
+          return `
+            <div class="cart-item" data-cart-id="${item.id}" data-product-id="${item.productId}">
+              <div class="cart-item-info">
+                <div class="cart-item-game">${item.gameName || ''}</div>
+                <div class="cart-item-name">${item.productName}</div>
+                <div class="cart-item-account">ID: ${item.accountId || '-'}</div>
+              </div>
+              <div class="cart-item-price">${formatRupiah(item.price * (item.qty || 1))}</div>
+              <button class="btn btn-danger btn-sm btn-remove" data-product-id="${item.productId}" type="button">Hapus</button>
+            </div>
+          `;
+        }).join('');
+
+        // Bind remove buttons
+        document.querySelectorAll('.btn-remove').forEach(btn => {
+          btn.addEventListener('click', function () {
+            Cart.remove(this.dataset.productId);
+            Navbar.updateCartBadge();
+            renderCart();
+          });
+        });
+
+        updateSummary(items);
+      }
+
+      function updateSummary(items) {
+        const subtotal = items.reduce((sum, item) => sum + (item.price * (item.qty || 1)), 0);
+        document.getElementById('summary-subtotal').textContent = formatRupiah(subtotal);
+
+        if (appliedPromo) {
+          document.getElementById('discount-row').style.display = 'flex';
+          document.getElementById('summary-discount').textContent = '- ' + formatRupiah(currentDiscount);
+        }
+
+        const total = Math.max(0, subtotal - currentDiscount);
+        document.getElementById('summary-total').textContent = formatRupiah(total);
+      }
+
+      // Apply promo
+      document.getElementById('promo-apply-btn').addEventListener('click', function () {
+        const code = document.getElementById('promo-input').value.trim();
+        const items = Cart.getItems(session.id);
+        const subtotal = items.reduce((sum, item) => sum + (item.price * (item.qty || 1)), 0);
+
+        const result = Promo.apply(code, subtotal);
+        document.getElementById('promo-error').textContent = '';
+        document.getElementById('promo-success').textContent = '';
+
+        if (result.success) {
+          appliedPromo = result.promo;
+          currentDiscount = result.discount;
+          document.getElementById('promo-input').value = result.promo.code;
+          document.getElementById('promo-success').textContent = result.message;
+          document.getElementById('promo-input').classList.add('success');
+          document.getElementById('promo-input').classList.remove('error');
+        } else {
+          appliedPromo = null;
+          currentDiscount = 0;
+          document.getElementById('promo-error').textContent = result.message;
+          document.getElementById('promo-input').classList.add('error');
+          document.getElementById('promo-input').classList.remove('success');
+        }
+        updateSummary(Cart.getItems(session.id));
+      });
+
+      // Checkout button
+      document.getElementById('checkout-btn').addEventListener('click', function () {
+        const items = Cart.getItems(session.id);
+        if (items.length === 0) {
+          document.getElementById('alert-container').innerHTML = '<div class="alert alert-warning"><span class="alert-icon">⚠️</span><span class="alert-body">Keranjang kosong</span></div>';
+          return;
+        }
+        // Simpan data ke sessionStorage untuk checkout page
+        const subtotal = items.reduce((sum, item) => sum + (item.price * (item.qty || 1)), 0);
+        const checkoutData = {
+          items: items,
+          subtotal: subtotal,
+          discount: currentDiscount,
+          total: Math.max(0, subtotal - currentDiscount),
+          promoCode: appliedPromo ? appliedPromo.code : null
+        };
+        sessionStorage.setItem('nxt_checkout_data', JSON.stringify(checkoutData));
+        window.location.href = 'checkout.html';
+      });
+
+      renderCart();
+    });
+  </script>
+</body>
+</html>

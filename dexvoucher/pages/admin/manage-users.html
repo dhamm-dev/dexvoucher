@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kelola Pengguna — DexVoucher</title>
+  <link rel="stylesheet" href="../../assets/css/main.css">
+</head>
+<body>
+  <div id="admin-layout"></div>
+  <script src="../../assets/js/utils.js"></script>
+  <script src="../../assets/js/storage.js"></script>
+  <script src="../../assets/js/theme.js"></script>
+  <script src="../../assets/js/auth.js"></script>
+  <script src="../../assets/js/admin-sidebar.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      ThemeManager.init(); Auth.requireAdmin(); AdminSidebar.render();
+      document.getElementById('breadcrumb').textContent = 'Kelola Pengguna';
+      const content = document.getElementById('admin-content');
+      const session = Auth.getSession();
+
+      function render() {
+        let users = Storage.getUsers();
+        const q = document.getElementById('search-user')?.value.toLowerCase() || '';
+        if (q) users = users.filter(u => u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q));
+
+        content.innerHTML = `
+          <div class="page-header">
+            <h1>Kelola Pengguna</h1>
+            <input type="text" id="search-user" class="input-field" placeholder="Cari nama atau email..." style="max-width:300px;font-size:0.85rem">
+          </div>
+          <div class="table-wrapper">
+            <table>
+              <thead><tr><th>Nama</th><th>Email</th><th>Telepon</th><th>Role</th><th>Status</th><th>Tanggal Daftar</th><th>Aksi</th></tr></thead>
+              <tbody>${users.map(u => `
+                <tr>
+                  <td style="font-weight:500">${u.name}</td>
+                  <td style="font-size:0.82rem">${u.email}</td>
+                  <td>${u.phone || '-'}</td>
+                  <td><span class="badge ${u.role === 'admin' ? 'badge-hot' : 'badge-new'}">${u.role}</span></td>
+                  <td><span class="badge ${u.isActive ? 'badge-success' : 'badge-failed'}">${u.isActive ? 'Aktif' : 'Nonaktif'}</span></td>
+                  <td style="font-size:0.82rem">${formatDate(u.createdAt)}</td>
+                  <td>
+                    <div class="flex gap-sm">
+                      <button class="btn btn-outline btn-sm detail-user-btn" data-id="${u.id}">Detail</button>
+                      ${u.role !== 'admin' ? `
+                        <button class="btn ${u.isActive ? 'btn-secondary' : 'btn-success'} btn-sm toggle-user-btn" data-id="${u.id}" data-active="${u.isActive}">${u.isActive ? 'Nonaktifkan' : 'Aktifkan'}</button>
+                        <button class="btn btn-danger btn-sm delete-user-btn" data-id="${u.id}" ${u.id === session.id ? 'disabled' : ''}>Hapus</button>
+                      ` : '<span style="color:var(--text-muted);font-size:0.8rem">-</span>'}
+                    </div>
+                  </td>
+                </tr>`).join('')}</tbody>
+            </table>
+          </div>
+          <p style="margin-top:12px;color:var(--text-muted);font-size:0.85rem">Total: ${users.length} pengguna</p>
+        `;
+
+        document.getElementById('search-user').addEventListener('input', render);
+
+        document.querySelectorAll('.detail-user-btn').forEach(b => b.addEventListener('click', function () {
+          const u = Storage.getUsers().find(x => x.id === this.dataset.id);
+          if (!u) return;
+          const ov = document.querySelector('.modal-overlay'); if (ov) ov.remove();
+          const overlay = document.createElement('div'); overlay.className = 'modal-overlay';
+          overlay.innerHTML = `
+            <div class="modal" style="max-width:450px">
+              <div class="modal-header"><h3>Detail Pengguna</h3><button class="modal-close" id="modal-close">&times;</button></div>
+              <div class="modal-body">
+                <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px">
+                  <div style="width:56px;height:56px;border-radius:50%;background:var(--gradient);display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.5rem;font-weight:700">${u.name.charAt(0)}</div>
+                  <div><div style="font-weight:600;font-size:1.1rem">${u.name}</div><div style="color:var(--text-muted);font-size:0.85rem">${u.email}</div></div>
+                </div>
+                <div style="font-size:0.9rem"><div class="flex justify-between" style="padding:6px 0;border-bottom:1px solid var(--border)"><span style="color:var(--text-secondary)">ID</span><span style="font-family:var(--font-mono);font-size:0.8rem">${u.id}</span></div><div class="flex justify-between" style="padding:6px 0;border-bottom:1px solid var(--border)"><span style="color:var(--text-secondary)">Telepon</span><span>${u.phone || '-'}</span></div><div class="flex justify-between" style="padding:6px 0;border-bottom:1px solid var(--border)"><span style="color:var(--text-secondary)">Role</span><span class="badge ${u.role === 'admin' ? 'badge-hot' : 'badge-new'}">${u.role}</span></div><div class="flex justify-between" style="padding:6px 0;border-bottom:1px solid var(--border)"><span style="color:var(--text-secondary)">Status</span><span class="badge ${u.isActive ? 'badge-success' : 'badge-failed'}">${u.isActive ? 'Aktif' : 'Nonaktif'}</span></div><div class="flex justify-between" style="padding:6px 0"><span style="color:var(--text-secondary)">Bergabung</span><span>${formatDate(u.createdAt)}</span></div></div>
+              </div>
+              <div class="modal-footer"><button class="btn btn-secondary" id="modal-close-btn">Tutup</button></div>
+            </div>`;
+          document.body.appendChild(overlay);
+          overlay.querySelectorAll('#modal-close, #modal-close-btn').forEach(el => el.addEventListener('click', () => overlay.remove()));
+          overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
+        }));
+
+        document.querySelectorAll('.toggle-user-btn').forEach(b => b.addEventListener('click', function () {
+          let all = Storage.getUsers();
+          const idx = all.findIndex(x => x.id === this.dataset.id);
+          if (idx !== -1) { all[idx].isActive = !all[idx].isActive; Storage.setUsers(all); render(); }
+        }));
+
+        document.querySelectorAll('.delete-user-btn').forEach(b => b.addEventListener('click', function () {
+          if (this.disabled) return;
+          if (!confirm('Hapus pengguna ini?')) return;
+          let all = Storage.getUsers();
+          all = all.filter(x => x.id !== this.dataset.id);
+          Storage.setUsers(all);
+          render();
+        }));
+      }
+      render();
+    });
+  </script>
+</body>
+</html>

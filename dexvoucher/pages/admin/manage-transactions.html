@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kelola Transaksi — DexVoucher</title>
+  <link rel="stylesheet" href="../../assets/css/main.css">
+</head>
+<body>
+  <div id="admin-layout"></div>
+  <script src="../../assets/js/utils.js"></script>
+  <script src="../../assets/js/storage.js"></script>
+  <script src="../../assets/js/theme.js"></script>
+  <script src="../../assets/js/auth.js"></script>
+  <script src="../../assets/js/transaction.js"></script>
+  <script src="../../assets/js/products.js"></script>
+  <script src="../../assets/js/admin-sidebar.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      ThemeManager.init(); Auth.requireAdmin(); AdminSidebar.render();
+      document.getElementById('breadcrumb').textContent = 'Kelola Transaksi';
+      const content = document.getElementById('admin-content');
+
+      function render() {
+        let trxs = Transaction.getAll();
+        const statusFilter = document.getElementById('filter-status')?.value || '';
+        const gameFilter = document.getElementById('filter-game-trx')?.value || '';
+        if (statusFilter) trxs = trxs.filter(t => t.status === statusFilter);
+        if (gameFilter) trxs = trxs.filter(t => t.gameId === gameFilter);
+
+        const gameOptions = Object.entries(Products.GAMES).map(([k, v]) => `<option value="${k}">${v.name}</option>`).join('');
+
+        content.innerHTML = `
+          <div class="page-header">
+            <h1>Kelola Transaksi</h1>
+            <button class="btn btn-outline" id="export-csv-btn">📥 Export CSV</button>
+          </div>
+          <div class="flex gap-md" style="margin-bottom:16px;flex-wrap:wrap">
+            <select class="input-field" id="filter-status" style="width:auto;min-width:130px"><option value="">Semua Status</option><option value="pending">Pending</option><option value="success">Success</option><option value="failed">Failed</option></select>
+            <select class="input-field" id="filter-game-trx" style="width:auto;min-width:160px"><option value="">Semua Game</option>${gameOptions}</select>
+          </div>
+          <div class="table-wrapper">
+            <table>
+              <thead><tr><th>ID Transaksi</th><th>User</th><th>Item</th><th>Total</th><th>Status</th><th>Tanggal</th><th>Aksi</th></tr></thead>
+              <tbody>${trxs.map(t => `
+                <tr>
+                  <td style="font-family:var(--font-mono);font-size:0.78rem">${t.id}</td>
+                  <td style="font-size:0.82rem">${t.userId.substring(0, 12)}...</td>
+                  <td style="font-size:0.82rem">${t.items.map(i => i.name).join(', ')}</td>
+                  <td style="font-weight:600">${formatRupiah(t.total)}</td>
+                  <td><span class="badge ${t.status === 'success' ? 'badge-success' : t.status === 'failed' ? 'badge-failed' : 'badge-pending'}">${t.status}</span></td>
+                  <td style="font-size:0.82rem">${formatDate(t.createdAt)}</td>
+                  <td>
+                    <div class="flex gap-sm" style="flex-wrap:wrap">
+                      <button class="btn btn-outline btn-sm detail-trx-btn" data-id="${t.id}">Detail</button>
+                      ${t.status === 'pending' ? `
+                        <button class="btn btn-success btn-sm approve-trx-btn" data-id="${t.id}">Setuju</button>
+                        <button class="btn btn-danger btn-sm reject-trx-btn" data-id="${t.id}">Tolak</button>
+                      ` : '<span style="color:var(--text-muted);font-size:0.78rem">-</span>'}
+                    </div>
+                  </td>
+                </tr>`).join('')}</tbody>
+            </table>
+          </div>
+          <p style="margin-top:12px;color:var(--text-muted);font-size:0.85rem">Total: ${trxs.length} transaksi</p>
+          <div id="trx-detail-modal-container"></div>
+        `;
+
+        document.getElementById('filter-status').addEventListener('change', render);
+        document.getElementById('filter-game-trx').addEventListener('change', render);
+
+        document.querySelectorAll('.detail-trx-btn').forEach(b => b.addEventListener('click', function () {
+          const t = Transaction.getById(this.dataset.id);
+          if (!t) return;
+          showDetailModal(t);
+        }));
+
+        document.querySelectorAll('.approve-trx-btn').forEach(b => b.addEventListener('click', function () {
+          Transaction.updateStatus(this.dataset.id, 'success');
+          render();
+        }));
+
+        document.querySelectorAll('.reject-trx-btn').forEach(b => b.addEventListener('click', function () {
+          Transaction.updateStatus(this.dataset.id, 'failed');
+          render();
+        }));
+
+        document.getElementById('export-csv-btn').addEventListener('click', function () {
+          const allTrxs = Transaction.getAll();
+          const csv = Transaction.exportToCSV(allTrxs);
+          const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+          const link = document.createElement('a');
+          link.href = URL.createObjectURL(blob);
+          link.download = 'transaksi_dexvoucher_' + Date.now() + '.csv';
+          link.click();
+        });
+      }
+
+      function showDetailModal(t) {
+        const existing = document.querySelector('.modal-overlay'); if (existing) existing.remove();
+        const statusBadge = t.status === 'success' ? 'badge-success' : t.status === 'failed' ? 'badge-failed' : 'badge-pending';
+        const overlay = document.createElement('div'); overlay.className = 'modal-overlay';
+        overlay.innerHTML = `
+          <div class="modal" style="max-width:520px">
+            <div class="modal-header"><h3>Detail Transaksi</h3><button class="modal-close" id="modal-close">&times;</button></div>
+            <div class="modal-body">
+              <div style="text-align:center;margin-bottom:12px"><div style="font-family:var(--font-mono);color:var(--text-muted);font-size:0.85rem">${t.id}</div><span class="badge ${statusBadge}" style="margin-top:4px">${t.status}</span></div>
+              <div style="font-size:0.82rem"><div class="flex justify-between" style="padding:4px 0"><span style="color:var(--text-muted)">User ID</span><span>${t.userId}</span></div><div class="flex justify-between" style="padding:4px 0"><span style="color:var(--text-muted)">ID Akun</span><span>${t.accountId || '-'}</span></div><div class="flex justify-between" style="padding:4px 0"><span style="color:var(--text-muted)">Metode Bayar</span><span>${t.paymentMethod || '-'}</span></div><div class="flex justify-between" style="padding:4px 0"><span style="color:var(--text-muted)">Tanggal</span><span>${formatDate(t.createdAt)}</span></div></div>
+              <div style="margin-top:12px;border-top:1px solid var(--border);padding-top:12px">${t.items.map(i => `<div class="flex justify-between" style="padding:4px 0;font-size:0.88rem"><span>${i.name} x ${i.qty || 1}</span><span>${formatRupiah(i.price * (i.qty || 1))}</span></div>`).join('')}</div>
+              ${t.discount > 0 ? `<div class="flex justify-between" style="padding:4px 0;font-size:0.82rem;color:var(--success)"><span>Diskon ${t.promoCode || ''}</span><span>-${formatRupiah(t.discount)}</span></div>` : ''}
+              <div class="flex justify-between" style="padding:6px 0;font-weight:700;font-size:1rem;border-top:1px solid var(--border);margin-top:4px"><span>Total</span><span>${formatRupiah(t.total)}</span></div>
+            </div>
+            <div class="modal-footer"><button class="btn btn-secondary" id="modal-close-btn">Tutup</button></div>
+          </div>`;
+        document.body.appendChild(overlay);
+        overlay.querySelectorAll('#modal-close, #modal-close-btn').forEach(el => el.addEventListener('click', () => overlay.remove()));
+        overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
+      }
+
+      render();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout — DexVoucher</title>
+  <meta name="description" content="Selesaikan pembayaran top up game Anda.">
+  <link rel="stylesheet" href="../../assets/css/main.css">
+  <style>
+    .checkout-page { padding-top: calc(var(--navbar-height) + 32px); padding-bottom: 60px; }
+    .payment-option {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      background: var(--bg-primary);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .payment-option:hover { border-color: var(--accent); }
+    .payment-option.selected { border-color: var(--accent); background: var(--accent-glow); }
+    .payment-option input[type="radio"] { accent-color: var(--accent); width: 18px; height: 18px; }
+    .payment-option .payment-icon { font-size: 1.5rem; }
+    .payment-option .payment-name { font-weight: 500; font-size: 0.9rem; }
+    .order-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.88rem;
+    }
+    .order-item:last-child { border-bottom: none; }
+    .price-line {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      font-size: 0.9rem;
+    }
+    .price-line.total {
+      font-weight: 700;
+      font-size: 1.1rem;
+      border-top: 1px solid var(--border);
+      padding-top: 12px;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div id="navbar-container"></div>
+
+  <div class="checkout-page">
+    <div class="container">
+      <div class="page-header">
+        <div>
+          <h1>Checkout</h1>
+          <p>Selesaikan pembayaran top up Anda</p>
+        </div>
+      </div>
+
+      <div id="alert-container"></div>
+      <div id="checkout-empty" class="empty-state" style="display:none">
+        <div class="empty-icon">📭</div>
+        <h3>Tidak ada data checkout</h3>
+        <p>Silakan tambahkan item ke keranjang terlebih dahulu</p>
+        <a href="cart.html" class="btn btn-primary">Kembali ke Keranjang</a>
+      </div>
+
+      <div id="checkout-content" style="display:none">
+        <div class="grid" style="grid-template-columns: 1fr 380px; gap: 24px; align-items: start;">
+          <!-- Kolom Kiri -->
+          <div>
+            <!-- Ringkasan Order -->
+            <div class="card" style="margin-bottom:20px">
+              <h3 style="margin-bottom:16px">Ringkasan Order</h3>
+              <div id="order-items"></div>
+            </div>
+
+            <!-- Metode Pembayaran -->
+            <div class="card">
+              <h3 style="margin-bottom:16px">Metode Pembayaran</h3>
+              <div id="payment-methods" class="flex flex-col gap-sm"></div>
+              <span class="input-error" id="payment-error"></span>
+            </div>
+          </div>
+
+          <!-- Kolom Kanan -->
+          <div>
+            <div class="card" style="position:sticky;top:calc(var(--navbar-height) + 32px)">
+              <h3 style="margin-bottom:16px">Rincian Harga</h3>
+              <div class="price-line">
+                <span style="color:var(--text-secondary)">Subtotal</span>
+                <span id="rincian-subtotal">Rp 0</span>
+              </div>
+              <div class="price-line" id="rincian-diskon-row" style="display:none">
+                <span style="color:var(--success)">Diskon</span>
+                <span id="rincian-diskon" style="color:var(--success)">-Rp 0</span>
+              </div>
+              <div class="price-line total">
+                <span>Total</span>
+                <span id="rincian-total">Rp 0</span>
+              </div>
+              <button class="btn btn-primary btn-lg btn-block mt-lg" id="bayar-btn">
+                Bayar Sekarang
+              </button>
+              <a href="cart.html" class="btn btn-secondary btn-block mt-sm">Kembali ke Keranjang</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../../assets/js/utils.js"></script>
+  <script src="../../assets/js/storage.js"></script>
+  <script src="../../assets/js/theme.js"></script>
+  <script src="../../data/seed.js"></script>
+  <script src="../../assets/js/auth.js"></script>
+  <script src="../../assets/js/cart.js"></script>
+  <script src="../../assets/js/promo.js"></script>
+  <script src="../../assets/js/transaction.js"></script>
+  <script src="../../assets/js/navbar.js"></script>
+  <script src="../../assets/js/checkout.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      ThemeManager.init();
+      if (typeof Seed !== 'undefined') Seed.init();
+      Auth.requireAuth();
+      Navbar.render();
+
+      const session = Auth.getSession();
+      const checkoutData = JSON.parse(sessionStorage.getItem('nxt_checkout_data') || 'null');
+      const alertContainer = document.getElementById('alert-container');
+      const emptyDiv = document.getElementById('checkout-empty');
+      const contentDiv = document.getElementById('checkout-content');
+
+      if (!checkoutData || !checkoutData.items || checkoutData.items.length === 0) {
+        emptyDiv.style.display = 'flex';
+        contentDiv.style.display = 'none';
+        return;
+      }
+      emptyDiv.style.display = 'none';
+      contentDiv.style.display = 'block';
+
+      let selectedPayment = '';
+
+      // Render order items
+      (function renderOrder() {
+        const container = document.getElementById('order-items');
+        container.innerHTML = checkoutData.items.map(item => `
+          <div class="order-item">
+            <div>
+              <div style="font-weight:500">${item.productName}</div>
+              <div style="font-size:0.8rem;color:var(--text-muted)">${item.accountId || ''}</div>
+            </div>
+            <div style="font-weight:600">${formatRupiah(item.price * (item.qty || 1))}</div>
+          </div>
+        `).join('');
+      })();
+
+      // Render payment methods
+      (function renderPayments() {
+        const container = document.getElementById('payment-methods');
+        container.innerHTML = Checkout.PAYMENT_METHODS.map(p => `
+          <label class="payment-option" data-payment-id="${p.id}">
+            <input type="radio" name="payment" value="${p.id}">
+            <span class="payment-icon">${p.icon}</span>
+            <span class="payment-name">${p.name}</span>
+          </label>
+        `).join('');
+
+        container.querySelectorAll('.payment-option').forEach(opt => {
+          opt.addEventListener('click', function () {
+            container.querySelectorAll('.payment-option').forEach(o => o.classList.remove('selected'));
+            this.classList.add('selected');
+            this.querySelector('input[type="radio"]').checked = true;
+            selectedPayment = this.dataset.paymentId;
+            document.getElementById('payment-error').textContent = '';
+          });
+        });
+      })();
+
+      // Update rincian harga
+      (function renderPrice() {
+        document.getElementById('rincian-subtotal').textContent = formatRupiah(checkoutData.subtotal);
+        if (checkoutData.discount > 0) {
+          document.getElementById('rincian-diskon-row').style.display = 'flex';
+          document.getElementById('rincian-diskon').textContent = '- ' + formatRupiah(checkoutData.discount);
+        }
+        document.getElementById('rincian-total').textContent = formatRupiah(checkoutData.total);
+      })();
+
+      // Bayar Sekarang
+      document.getElementById('bayar-btn').addEventListener('click', function () {
+        alertContainer.innerHTML = '';
+
+        if (!selectedPayment) {
+          document.getElementById('payment-error').textContent = 'Pilih metode pembayaran';
+          return;
+        }
+
+        const allAccountIds = [...new Set(checkoutData.items.map(i => i.accountId).filter(Boolean))];
+        const allGameIds = [...new Set(checkoutData.items.map(i => i.gameId).filter(Boolean))];
+
+        this.disabled = true;
+        this.innerHTML = '<span class="loading-spinner"><span class="spinner"></span> Memproses...</span>';
+
+        const result = Checkout.process({
+          userId: session.id,
+          items: checkoutData.items,
+          subtotal: checkoutData.subtotal,
+          discount: checkoutData.discount,
+          total: checkoutData.total,
+          promoCode: checkoutData.promoCode,
+          gameId: allGameIds[0] || '',
+          accountId: allAccountIds[0] || '',
+          paymentMethod: selectedPayment
+        });
+
+        setTimeout(function () {
+          if (result.success) {
+            const btn = document.getElementById('bayar-btn');
+            btn.innerHTML = '✅ Berhasil!';
+            sessionStorage.removeItem('nxt_checkout_data');
+            setTimeout(function () {
+              window.location.href = 'invoice.html?id=' + result.transaction.id;
+            }, 800);
+          } else {
+            this.disabled = false;
+            this.innerHTML = 'Bayar Sekarang';
+            alertContainer.innerHTML = '<div class="alert alert-error"><span class="alert-icon">❌</span><span class="alert-body">' + result.message + '</span></div>';
+          }
+        }.bind(this), 1000);
+      });
+    });
+  </script>
+</body>
+</html>
