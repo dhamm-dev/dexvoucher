@@ -16,12 +16,12 @@ function showToast(message, type) {
     document.body.appendChild(container);
   }
 
-  const icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
+  const iconMap = { success: 'sukses.png', error: 'gagal.png', warning: 'warning.png', info: 'sukses.png' };
   const toast = document.createElement('div');
   toast.className = `toast toast-${type}`;
   toast.setAttribute('role', 'alert');
   toast.innerHTML = `
-    <span class="toast-icon">${icons[type] || 'ℹ️'}</span>
+    <span class="toast-icon"><img class="icon-img" src="/dexvoucher/assets/images/icons/${iconMap[type] || 'sukses.png'}" alt="" style="width:20px;height:20px"></span>
     <span>${message}</span>
     <button class="toast-close" type="button" aria-label="Tutup">&times;</button>
   `;

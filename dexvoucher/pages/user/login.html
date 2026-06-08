@@ -123,7 +123,7 @@
           <label for="password">Password</label>
           <div class="input-wrapper">
             <input type="password" id="password" class="input-field" placeholder="Masukkan password" autocomplete="current-password" required>
-            <button type="button" class="password-toggle" id="toggle-password" aria-label="Tampilkan password">👁</button>
+            <button type="button" class="password-toggle" id="toggle-password" aria-label="Tampilkan password"><img class="icon-img" src="../../assets/images/icons/show_password.png" alt="" style="width:18px;height:18px"></button>
           </div>
           <span class="input-error" id="password-error"></span>
         </div>
@@ -184,7 +184,9 @@
       togglePassword.addEventListener('click', function () {
         const type = passwordInput.type === 'password' ? 'text' : 'password';
         passwordInput.type = type;
-        this.textContent = type === 'password' ? '👁' : '🙈';
+        this.innerHTML = type === 'password'
+          ? '<img class="icon-img" src="../../assets/images/icons/show_password.png" alt="" style="width:18px;height:18px">'
+          : '<img class="icon-img" src="../../assets/images/icons/hide_password.png" alt="" style="width:18px;height:18px">';
       });
 
       // Validasi real-time email
@@ -274,10 +276,10 @@
       });
 
       function showAlert(type, message) {
-        const icon = type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️';
+        const icon = type === 'success' ? '../../assets/images/icons/sukses.png' : type === 'error' ? '../../assets/images/icons/gagal.png' : '../../assets/images/icons/sukses.png';
         alertContainer.innerHTML =
           '<div class="alert alert-' + type + '">' +
-          '<span class="alert-icon">' + icon + '</span>' +
+          '<span class="alert-icon"><img class="icon-img" src="' + icon + '" alt="" style="width:20px;height:20px"></span>' +
           '<span class="alert-body">' + message + '</span>' +
           '</div>';
       }

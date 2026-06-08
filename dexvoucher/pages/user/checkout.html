@@ -61,7 +61,7 @@
 
       <div id="alert-container"></div>
       <div id="checkout-empty" class="empty-state" style="display:none">
-        <div class="empty-icon">📭</div>
+        <div class="empty-icon"><img class="icon-img" src="../../assets/images/icons/checkout.png" alt="" style="width:48px;height:48px"></div>
         <h3>Tidak ada data checkout</h3>
         <p>Silakan tambahkan item ke keranjang terlebih dahulu</p>
         <a href="cart.html" class="btn btn-primary">Kembali ke Keranjang</a>
@@ -221,7 +221,7 @@
         setTimeout(function () {
           if (result.success) {
             const btn = document.getElementById('bayar-btn');
-            btn.innerHTML = '✅ Berhasil!';
+            btn.innerHTML = '<img class="icon-img" src="../../assets/images/icons/sukses.png" alt="" style="width:16px;height:16px"> Berhasil!';
             sessionStorage.removeItem('nxt_checkout_data');
             setTimeout(function () {
               window.location.href = 'invoice.html?id=' + result.transaction.id;
@@ -229,7 +229,7 @@
           } else {
             this.disabled = false;
             this.innerHTML = 'Bayar Sekarang';
-            alertContainer.innerHTML = '<div class="alert alert-error"><span class="alert-icon">❌</span><span class="alert-body">' + result.message + '</span></div>';
+            alertContainer.innerHTML = '<div class="alert alert-error"><span class="alert-icon"><img class="icon-img" src="../../assets/images/icons/gagal.png" alt="" style="width:20px;height:20px"></span><span class="alert-body">' + result.message + '</span></div>';
           }
         }.bind(this), 1000);
       });

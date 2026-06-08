@@ -68,7 +68,7 @@
         <!-- Daftar item -->
         <div id="cart-items-container">
           <div class="empty-state" id="empty-cart">
-            <div class="empty-icon">🛒</div>
+            <div class="empty-icon"><img class="icon-img" src="../../assets/images/icons/checkout.png" alt="" style="width:48px;height:48px"></div>
             <h3>Keranjang Kosong</h3>
             <p>Belum ada item di keranjang. Yuk, top up game favoritmu!</p>
             <a href="../../index.html#games" class="btn btn-primary">Lihat Game</a>
@@ -224,7 +224,7 @@
       document.getElementById('checkout-btn').addEventListener('click', function () {
         const items = Cart.getItems(session.id);
         if (items.length === 0) {
-          document.getElementById('alert-container').innerHTML = '<div class="alert alert-warning"><span class="alert-icon">⚠️</span><span class="alert-body">Keranjang kosong</span></div>';
+          document.getElementById('alert-container').innerHTML = '<div class="alert alert-warning"><span class="alert-icon"><img class="icon-img" src="../../assets/images/icons/warning.png" alt="" style="width:20px;height:20px"></span><span class="alert-body">Keranjang kosong</span></div>';
           return;
         }
         // Simpan data ke sessionStorage untuk checkout page

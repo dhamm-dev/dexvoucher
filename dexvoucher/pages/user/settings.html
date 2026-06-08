@@ -105,7 +105,7 @@
 
       <!-- Danger Zone -->
       <div class="danger-zone">
-        <h3>⚠️ Zona Berbahaya</h3>
+        <h3><img class="icon-img" src="../../assets/images/icons/warning.png" alt="" style="width:20px;height:20px;vertical-align:middle"> Zona Berbahaya</h3>
         <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:16px">Tindakan di bawah ini tidak dapat dibatalkan.</p>
 
         <div class="settings-item" style="border-bottom-color:var(--danger)">
@@ -141,8 +141,8 @@
       const alertContainer = document.getElementById('alert-container');
 
       function showAlert(type, message) {
-        const icon = type === 'success' ? '✅' : type === 'error' ? '❌' : '⚠️';
-        alertContainer.innerHTML = '<div class="alert alert-' + type + '"><span class="alert-icon">' + icon + '</span><span class="alert-body">' + message + '</span></div>';
+        const iconMap = { success: '../../assets/images/icons/sukses.png', error: '../../assets/images/icons/gagal.png', warning: '../../assets/images/icons/warning.png' };
+        alertContainer.innerHTML = '<div class="alert alert-' + type + '"><span class="alert-icon"><img class="icon-img" src="' + (iconMap[type] || iconMap.warning) + '" alt="" style="width:20px;height:20px"></span><span class="alert-body">' + message + '</span></div>';
       }
 
       // Notifikasi toggle (dummy)
@@ -174,7 +174,7 @@
         overlay.innerHTML = `
           <div class="modal" style="max-width:420px">
             <div class="modal-header">
-              <h3 style="color:var(--danger)">⚠️ Hapus Akun</h3>
+              <h3 style="color:var(--danger)"><img class="icon-img" src="../../assets/images/icons/warning.png" alt="" style="width:20px;height:20px;vertical-align:middle"> Hapus Akun</h3>
             </div>
             <div class="modal-body">
               <p style="margin-bottom:16px">Apakah Anda yakin ingin menghapus akun? Semua data transaksi Anda akan hilang permanen.</p>
@@ -222,7 +222,7 @@
         overlay.innerHTML = `
           <div class="modal" style="max-width:420px">
             <div class="modal-header">
-              <h3 style="color:var(--danger)">⚠️ Reset Semua Data</h3>
+              <h3 style="color:var(--danger)"><img class="icon-img" src="../../assets/images/icons/warning.png" alt="" style="width:20px;height:20px;vertical-align:middle"> Reset Semua Data</h3>
             </div>
             <div class="modal-body">
               <p style="margin-bottom:16px">Ini akan menghapus SEMUA data termasuk user, produk, transaksi, dan promo. Tindakan ini tidak dapat dibatalkan.</p>

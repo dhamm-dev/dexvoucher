@@ -118,7 +118,7 @@
           <label for="password">Password</label>
           <div class="input-wrapper">
             <input type="password" id="password" class="input-field" placeholder="Minimal 6 karakter" autocomplete="new-password" required>
-            <button type="button" class="password-toggle" id="toggle-password" aria-label="Tampilkan password">👁</button>
+            <button type="button" class="password-toggle" id="toggle-password" aria-label="Tampilkan password"><img class="icon-img" src="../../assets/images/icons/show_password.png" alt="" style="width:18px;height:18px"></button>
           </div>
           <span class="input-error" id="password-error"></span>
         </div>
@@ -127,7 +127,7 @@
           <label for="confirm-password">Konfirmasi Password</label>
           <div class="input-wrapper">
             <input type="password" id="confirm-password" class="input-field" placeholder="Ulangi password" autocomplete="new-password" required>
-            <button type="button" class="password-toggle" id="toggle-confirm" aria-label="Tampilkan password">👁</button>
+            <button type="button" class="password-toggle" id="toggle-confirm" aria-label="Tampilkan password"><img class="icon-img" src="../../assets/images/icons/show_password.png" alt="" style="width:18px;height:18px"></button>
           </div>
           <span class="input-error" id="confirm-error"></span>
         </div>
@@ -185,12 +185,16 @@
       document.getElementById('toggle-password').addEventListener('click', function () {
         const type = passwordInput.type === 'password' ? 'text' : 'password';
         passwordInput.type = type;
-        this.textContent = type === 'password' ? '👁' : '🙈';
+        this.innerHTML = type === 'password'
+          ? '<img class="icon-img" src="../../assets/images/icons/show_password.png" alt="" style="width:18px;height:18px">'
+          : '<img class="icon-img" src="../../assets/images/icons/hide_password.png" alt="" style="width:18px;height:18px">';
       });
       document.getElementById('toggle-confirm').addEventListener('click', function () {
         const type = confirmInput.type === 'password' ? 'text' : 'password';
         confirmInput.type = type;
-        this.textContent = type === 'password' ? '👁' : '🙈';
+        this.innerHTML = type === 'password'
+          ? '<img class="icon-img" src="../../assets/images/icons/show_password.png" alt="" style="width:18px;height:18px">'
+          : '<img class="icon-img" src="../../assets/images/icons/hide_password.png" alt="" style="width:18px;height:18px">';
       });
 
       // Validasi real-time nama
@@ -335,10 +339,10 @@
       });
 
       function showAlert(type, message) {
-        const icon = type === 'success' ? '✅' : '❌';
+        const icon = type === 'success' ? '../../assets/images/icons/sukses.png' : '../../assets/images/icons/gagal.png';
         alertContainer.innerHTML =
           '<div class="alert alert-' + type + '">' +
-          '<span class="alert-icon">' + icon + '</span>' +
+          '<span class="alert-icon"><img class="icon-img" src="' + icon + '" alt="" style="width:20px;height:20px"></span>' +
           '<span class="alert-body">' + message + '</span>' +
           '</div>';
       }

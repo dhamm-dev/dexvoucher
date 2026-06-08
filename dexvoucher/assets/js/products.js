@@ -98,19 +98,21 @@ const Products = {
       name: 'Roblox',
       color: '#E2231A',
       icon: 'R',
-      logo: 'Roblox.svg',
-      banner: 'Roblox_B.svg',
+      logo: 'Roblox.png',
+      banner: 'Roblox_B.jpg',
       description: 'Top up Robux Roblox dengan harga termurah. Premium membership tersedia.',
       categories: ['voucher', 'membership'],
       hasServerId: false,
-      badge: 'HOT'
+      badge: 'HOT',
+      accountLabel: 'Username',
+      accountPlaceholder: 'Masukkan Username Roblox'
     },
     'codm': {
       name: 'COD Mobile',
       color: '#C5943E',
       icon: 'CM',
-      logo: 'CODM.svg',
-      banner: 'CODM_B.svg',
+      logo: 'CODM.jpg',
+      banner: 'CODM_B.jpg',
       description: 'Top up CP COD Mobile termurah. Battle Pass juga tersedia.',
       categories: ['voucher', 'membership'],
       hasServerId: false,
@@ -120,8 +122,8 @@ const Products = {
       name: 'eFootball',
       color: '#00A859',
       icon: 'EF',
-      logo: 'eFootball.svg',
-      banner: 'eFootball_B.svg',
+      logo: 'Efootball.png',
+      banner: 'Efootball_B.jpg',
       description: 'Top up eFootball Coins dengan harga terbaik. Proses instan.',
       categories: ['voucher'],
       hasServerId: false,
@@ -131,8 +133,8 @@ const Products = {
       name: 'Delta Force',
       color: '#2D5A27',
       icon: 'DF',
-      logo: 'Delta_Force.svg',
-      banner: 'DeltaForce_B.svg',
+      logo: 'DeltaForce.png',
+      banner: 'DeltaForce_B.jpg',
       description: 'Top up Credits Delta Force termurah. Battle Pass tersedia.',
       categories: ['voucher', 'membership'],
       hasServerId: false,
@@ -185,13 +187,15 @@ const Products = {
     // Render form ID
     const formContainer = document.getElementById('game-id-form');
     if (formContainer) {
+      const accountLabel = game.accountLabel || 'User ID';
+      const accountPlaceholder = game.accountPlaceholder || 'Masukkan User ID';
       formContainer.innerHTML = `
         <div class="card">
-          <h3 style="margin-bottom:16px;font-size:1rem">Masukkan ID Akun</h3>
+          <h3 style="margin-bottom:16px;font-size:1rem">Masukkan ${accountLabel}</h3>
           <div class="form-row">
             <div class="input-group">
-              <label for="user-id">User ID</label>
-              <input type="text" id="user-id" class="input-field" placeholder="Masukkan User ID" required>
+              <label for="user-id">${accountLabel}</label>
+              <input type="text" id="user-id" class="input-field" placeholder="${accountPlaceholder}" required>
               <span class="input-error" id="user-id-error"></span>
             </div>
             ${game.hasServerId ? `
@@ -203,7 +207,7 @@ const Products = {
             ` : ''}
           </div>
           <div style="margin-top:12px">
-            <button class="btn btn-outline btn-sm" id="check-id-btn" type="button">🔍 Cek ID</button>
+            <button class="btn btn-outline btn-sm" id="check-id-btn" type="button"><img class="icon-img" src="/dexvoucher/assets/images/icons/search.png" alt="" style="width:14px;height:14px"> Cek ${accountLabel}</button>
             <span id="check-id-result" style="margin-left:12px;font-size:0.85rem"></span>
           </div>
         </div>
@@ -242,7 +246,7 @@ const Products = {
     );
 
     if (filtered.length === 0) {
-      grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">📦</div><h3>Tidak ada produk</h3><p>Belum ada produk untuk kategori ini</p></div>';
+      grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon"><img class="icon-img" src="/dexvoucher/assets/images/icons/Product.png" alt="" style="width:36px;height:36px"></div><h3>Tidak ada produk</h3><p>Belum ada produk untuk kategori ini</p></div>';
       return;
     }
 
@@ -267,6 +271,7 @@ const Products = {
    * @param {Object} game
    */
   _bindEvents(gameId, game) {
+    const acctLabel = game.accountLabel || 'User ID';
     // Tab switching
     document.querySelectorAll('[data-category]').forEach(tab => {
       tab.addEventListener('click', function () {
@@ -284,13 +289,13 @@ const Products = {
         const result = document.getElementById('check-id-result');
         if (!userId.value.trim()) {
           userId.classList.add('error');
-          document.getElementById('user-id-error').textContent = 'User ID harus diisi';
+          document.getElementById('user-id-error').textContent = acctLabel + ' harus diisi';
           result.textContent = '';
           return;
         }
         userId.classList.remove('error');
         document.getElementById('user-id-error').textContent = '';
-        result.textContent = '✅ ID valid';
+        result.innerHTML = '<img class="icon-img" src="/dexvoucher/assets/images/icons/sukses.png" alt="" style="width:16px;height:16px;vertical-align:middle"> ' + acctLabel + ' valid';
         result.style.color = 'var(--success)';
 
         if (game.hasServerId) {
@@ -313,7 +318,7 @@ const Products = {
         const userId = document.getElementById('user-id');
         if (!userId || !userId.value.trim()) {
           userId?.classList.add('error');
-          document.getElementById('user-id-error').textContent = 'Isi ID akun terlebih dahulu';
+          document.getElementById('user-id-error').textContent = 'Isi ' + acctLabel + ' terlebih dahulu';
           return;
         }
         const serverId = document.getElementById('server-id');
@@ -328,7 +333,7 @@ const Products = {
         const userId = document.getElementById('user-id');
         if (!userId || !userId.value.trim()) {
           userId?.classList.add('error');
-          document.getElementById('user-id-error').textContent = 'Isi ID akun terlebih dahulu';
+          document.getElementById('user-id-error').textContent = 'Isi ' + acctLabel + ' terlebih dahulu';
           return;
         }
         const session = Auth.getSession();
@@ -419,18 +424,24 @@ const Products = {
         window.location.href = '/dexvoucher/pages/user/login.html?redirect=' + encodeURIComponent(window.location.pathname);
         return;
       }
-      Cart.add({
+      const item = {
         productId: product.id,
         gameId: product.game,
         gameName: Products.GAMES[product.game]?.name || product.game,
-        userId: session.id,
         accountId: accountId + (serverId ? ` (${serverId})` : ''),
         productName: product.name,
         price: product.price,
         qty: 1
-      });
-      Navbar.updateCartBadge();
-      Products._showToast('success', 'Produk ditambahkan ke keranjang!');
+      };
+      const checkoutData = {
+        items: [item],
+        subtotal: product.price,
+        discount: 0,
+        total: product.price,
+        promoCode: null
+      };
+      sessionStorage.setItem('nxt_checkout_data', JSON.stringify(checkoutData));
+      window.location.href = '/dexvoucher/pages/user/checkout.html';
     });
   },
 
@@ -447,11 +458,11 @@ const Products = {
       document.body.appendChild(container);
     }
 
-    const icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
+    const iconMap = { success: 'sukses.png', error: 'gagal.png', warning: 'warning.png', info: 'sukses.png' };
     const toast = document.createElement('div');
     toast.className = `toast toast-${type}`;
     toast.innerHTML = `
-      <span class="toast-icon">${icons[type] || 'ℹ️'}</span>
+      <span class="toast-icon"><img class="icon-img" src="/dexvoucher/assets/images/icons/${iconMap[type] || 'sukses.png'}" alt="" style="width:20px;height:20px"></span>
       <span>${message}</span>
       <button class="toast-close" type="button">&times;</button>
     `;

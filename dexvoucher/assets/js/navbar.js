@@ -57,7 +57,7 @@ const Navbar = {
             <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Ganti tema" title="Toggle tema"><span class="theme-toggle-knob"></span></button>
 
             <a href="/dexvoucher/pages/user/cart.html" class="navbar-cart" aria-label="Keranjang belanja">
-              🛒
+              <img class="icon-img" src="/dexvoucher/assets/images/icons/checkout.png" alt="" style="width:20px;height:20px">
               <span class="cart-badge" id="cart-badge" style="display:none">0</span>
             </a>
 
@@ -65,9 +65,9 @@ const Navbar = {
               <div class="navbar-user" id="navbar-user">
                 <img src="${session.avatar || '/dexvoucher/assets/images/avatars/default.svg'}" alt="${session.name}" class="navbar-avatar" id="user-avatar" onerror="this.src='/dexvoucher/assets/images/avatars/default.svg'">
                 <div class="navbar-dropdown" id="user-dropdown">
-                  <a href="/dexvoucher/pages/user/profile.html">👤 Profil</a>
-                  <a href="/dexvoucher/pages/user/history.html">📜 Riwayat</a>
-                  <a href="/dexvoucher/pages/user/settings.html">⚙️ Pengaturan</a>
+                  <a href="/dexvoucher/pages/user/profile.html"><img class="icon-img" src="/dexvoucher/assets/images/icons/Profil.png" alt="" style="width:16px;height:16px"> Profil</a>
+                  <a href="/dexvoucher/pages/user/history.html"><img class="icon-img" src="/dexvoucher/assets/images/icons/transaction.png" alt="" style="width:16px;height:16px"> Riwayat</a>
+                  <a href="/dexvoucher/pages/user/settings.html"><img class="icon-img" src="/dexvoucher/assets/images/icons/setting.png" alt="" style="width:16px;height:16px"> Pengaturan</a>
                   <div class="divider"></div>
                   <button id="logout-btn" type="button">🚪 Logout</button>
                 </div>

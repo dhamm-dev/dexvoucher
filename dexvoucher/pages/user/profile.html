@@ -198,7 +198,7 @@
             createdAt: user.createdAt
           });
 
-          status.textContent = '✅ Profil berhasil disimpan';
+          status.innerHTML = '<img class="icon-img" src="../../assets/images/icons/sukses.png" alt="" style="width:16px;height:16px;vertical-align:middle"> Profil berhasil disimpan';
           status.style.color = 'var(--success)';
           loadProfile();
           Navbar.render();
@@ -245,7 +245,7 @@
         Storage.setUsers(usersAll);
         user = usersAll[idx];
 
-        status.textContent = '✅ Password berhasil diganti';
+        status.innerHTML = '<img class="icon-img" src="../../assets/images/icons/sukses.png" alt="" style="width:16px;height:16px;vertical-align:middle"> Password berhasil diganti';
         status.style.color = 'var(--success)';
         document.getElementById('old-password').value = '';
         document.getElementById('new-password').value = '';

@@ -107,20 +107,20 @@
       const trxId = params.get('id');
 
       if (!trxId) {
-        container.innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><h3>ID Transaksi tidak ditemukan</h3><p>Pastikan URL invoice valid</p><a href="../../index.html" class="btn btn-primary">Kembali ke Home</a></div>';
+        container.innerHTML = '<div class="empty-state"><div class="empty-icon"><img class="icon-img" src="../../assets/images/icons/search.png" alt="" style="width:48px;height:48px"></div><h3>ID Transaksi tidak ditemukan</h3><p>Pastikan URL invoice valid</p><a href="../../index.html" class="btn btn-primary">Kembali ke Home</a></div>';
         return;
       }
 
       const transaction = Transaction.getById(trxId);
       if (!transaction) {
-        container.innerHTML = '<div class="empty-state"><div class="empty-icon">❌</div><h3>Transaksi tidak ditemukan</h3><p>Invoice tidak tersedia atau telah dihapus</p><a href="../../index.html" class="btn btn-primary">Kembali ke Home</a></div>';
+        container.innerHTML = '<div class="empty-state"><div class="empty-icon"><img class="icon-img" src="../../assets/images/icons/gagal.png" alt="" style="width:48px;height:48px"></div><h3>Transaksi tidak ditemukan</h3><p>Invoice tidak tersedia atau telah dihapus</p><a href="../../index.html" class="btn btn-primary">Kembali ke Home</a></div>';
         return;
       }
 
       // Cek kepemilikan
       const session = Auth.getSession();
       if (transaction.userId !== session.id && session.role !== 'admin') {
-        container.innerHTML = '<div class="empty-state"><div class="empty-icon">🔒</div><h3>Akses Ditolak</h3><p>Anda tidak memiliki akses ke invoice ini</p><a href="../../index.html" class="btn btn-primary">Kembali ke Home</a></div>';
+        container.innerHTML = '<div class="empty-state"><div class="empty-icon"><img class="icon-img" src="../../assets/images/icons/warning.png" alt="" style="width:48px;height:48px"></div><h3>Akses Ditolak</h3><p>Anda tidak memiliki akses ke invoice ini</p><a href="../../index.html" class="btn btn-primary">Kembali ke Home</a></div>';
         return;
       }
 
@@ -184,9 +184,9 @@
           </div>
 
           <div class="invoice-actions">
-            <button class="btn btn-primary" id="print-btn">🖨️ Download Invoice</button>
+            <button class="btn btn-primary" id="print-btn"><img class="icon-img" src="../../assets/images/icons/invoice.png" alt="" style="width:16px;height:16px"> Download Invoice</button>
             <a href="../../index.html" class="btn btn-secondary">🏠 Kembali ke Home</a>
-            <a href="history.html" class="btn btn-outline">📜 Lihat Riwayat</a>
+            <a href="history.html" class="btn btn-outline"><img class="icon-img" src="../../assets/images/icons/transaction.png" alt="" style="width:16px;height:16px"> Lihat Riwayat</a>
           </div>
         </div>
       `;
