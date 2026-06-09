@@ -126,6 +126,11 @@
 
 /* ===== MOBILE (< 576px) ===== */
 @media (max-width: 575px) {
+  html, body {
+    overflow-x: hidden;
+    width: 100%;
+  }
+
   .container {
     padding: 0 16px;
   }
