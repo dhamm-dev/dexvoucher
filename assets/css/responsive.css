@@ -19,6 +19,10 @@
     grid-template-columns: repeat(2, 1fr);
   }
 
+  #game-grid.grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
   .footer-grid {
     grid-template-columns: 1fr 1fr;
   }
@@ -136,6 +140,45 @@
     grid-template-columns: 1fr;
   }
 
+  #game-grid.grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  #product-grid.grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .game-card {
+    padding: 16px 10px;
+  }
+  .game-card .game-icon {
+    width: 48px;
+    height: 48px;
+  }
+  .game-card h3 {
+    font-size: 0.8rem;
+    margin-bottom: 8px;
+  }
+
+  .product-card {
+    padding: 12px 8px;
+  }
+  .product-card .product-amount {
+    font-size: 1rem;
+  }
+  .product-card .product-name {
+    font-size: 0.75rem;
+    margin-bottom: 8px;
+  }
+  .product-card .product-price {
+    font-size: 0.9rem;
+  }
+  .product-card .btn {
+    font-size: 0.7rem;
+    white-space: normal;
+    padding: 4px 6px;
+  }
+
   .hero {
     padding: 100px 0 60px;
     min-height: auto;
@@ -210,10 +253,6 @@
 
   .stat-card .stat-value {
     font-size: 1.5rem;
-  }
-
-  .product-card .product-amount {
-    font-size: 1.25rem;
   }
 
   .table-wrapper {
