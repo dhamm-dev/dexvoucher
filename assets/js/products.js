@@ -157,7 +157,7 @@ const Products = {
   renderGamePage(gameId) {
     const game = this.GAMES[gameId];
     if (!game) {
-      document.body.innerHTML = '<div class="container" style="padding:100px 20px;text-align:center"><h1>Game tidak ditemukan</h1><a href="/dexvoucher/index.html" class="btn btn-primary mt-lg">Kembali ke Home</a></div>';
+      document.body.innerHTML = '<div class="container" style="padding:100px 20px;text-align:center"><h1>Game tidak ditemukan</h1><a href="/index.html" class="btn btn-primary mt-lg">Kembali ke Home</a></div>';
       return;
     }
 
@@ -207,7 +207,7 @@ const Products = {
             ` : ''}
           </div>
           <div style="margin-top:12px">
-            <button class="btn btn-outline btn-sm" id="check-id-btn" type="button"><img class="icon-img" src="/dexvoucher/assets/images/icons/search.png" alt="" style="width:14px;height:14px"> Cek ${accountLabel}</button>
+            <button class="btn btn-outline btn-sm" id="check-id-btn" type="button"><img class="icon-img" src="/assets/images/icons/search.png" alt="" style="width:14px;height:14px"> Cek ${accountLabel}</button>
             <span id="check-id-result" style="margin-left:12px;font-size:0.85rem"></span>
           </div>
         </div>
@@ -246,7 +246,7 @@ const Products = {
     );
 
     if (filtered.length === 0) {
-      grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon"><img class="icon-img" src="/dexvoucher/assets/images/icons/Product.png" alt="" style="width:36px;height:36px"></div><h3>Tidak ada produk</h3><p>Belum ada produk untuk kategori ini</p></div>';
+      grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon"><img class="icon-img" src="/assets/images/icons/Product.png" alt="" style="width:36px;height:36px"></div><h3>Tidak ada produk</h3><p>Belum ada produk untuk kategori ini</p></div>';
       return;
     }
 
@@ -295,7 +295,7 @@ const Products = {
         }
         userId.classList.remove('error');
         document.getElementById('user-id-error').textContent = '';
-        result.innerHTML = '<img class="icon-img" src="/dexvoucher/assets/images/icons/sukses.png" alt="" style="width:16px;height:16px;vertical-align:middle"> ' + acctLabel + ' valid';
+        result.innerHTML = '<img class="icon-img" src="/assets/images/icons/sukses.png" alt="" style="width:16px;height:16px;vertical-align:middle"> ' + acctLabel + ' valid';
         result.style.color = 'var(--success)';
 
         if (game.hasServerId) {
@@ -338,7 +338,7 @@ const Products = {
         }
         const session = Auth.getSession();
         if (!session) {
-          window.location.href = '/dexvoucher/pages/user/login.html?redirect=' + encodeURIComponent(window.location.pathname);
+          window.location.href = '/pages/user/login.html?redirect=' + encodeURIComponent(window.location.pathname);
           return;
         }
         const serverId = document.getElementById('server-id');
@@ -421,7 +421,7 @@ const Products = {
       overlay.remove();
       const session = Auth.getSession();
       if (!session) {
-        window.location.href = '/dexvoucher/pages/user/login.html?redirect=' + encodeURIComponent(window.location.pathname);
+        window.location.href = '/pages/user/login.html?redirect=' + encodeURIComponent(window.location.pathname);
         return;
       }
       const item = {
@@ -441,7 +441,7 @@ const Products = {
         promoCode: null
       };
       sessionStorage.setItem('nxt_checkout_data', JSON.stringify(checkoutData));
-      window.location.href = '/dexvoucher/pages/user/checkout.html';
+      window.location.href = '/pages/user/checkout.html';
     });
   },
 
@@ -462,7 +462,7 @@ const Products = {
     const toast = document.createElement('div');
     toast.className = `toast toast-${type}`;
     toast.innerHTML = `
-      <span class="toast-icon"><img class="icon-img" src="/dexvoucher/assets/images/icons/${iconMap[type] || 'sukses.png'}" alt="" style="width:20px;height:20px"></span>
+      <span class="toast-icon"><img class="icon-img" src="/assets/images/icons/${iconMap[type] || 'sukses.png'}" alt="" style="width:20px;height:20px"></span>
       <span>${message}</span>
       <button class="toast-close" type="button">&times;</button>
     `;

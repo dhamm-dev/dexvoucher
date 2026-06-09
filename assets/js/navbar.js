@@ -7,9 +7,9 @@
 const Navbar = {
   /** Daftar menu utama */
   MENUS: [
-    { label: 'Beranda', href: '/dexvoucher/index.html' },
-    { label: 'Game', href: '/dexvoucher/index.html#games' },
-    { label: 'Tentang', href: '/dexvoucher/pages/user/about.html' }
+    { label: 'Beranda', href: '/index.html' },
+    { label: 'Game', href: '/index.html#games' },
+    { label: 'Tentang', href: '/pages/user/about.html' }
   ],
 
   /** Data game untuk dropdown navigasi */
@@ -41,8 +41,8 @@ const Navbar = {
         <div class="navbar-inner">
           <div class="flex items-center gap-lg">
             <button class="navbar-toggle" id="nav-toggle" aria-label="Buka menu" type="button">☰</button>
-            <a href="/dexvoucher/index.html" class="navbar-logo">
-              <img src="/dexvoucher/assets/images/logo/logo.svg" alt="DexVoucher" onerror="this.style.display='none'" style="width:32px;height:32px">
+            <a href="/index.html" class="navbar-logo">
+              <img src="/assets/images/logo/logo.svg" alt="DexVoucher" onerror="this.style.display='none'" style="width:32px;height:32px">
               DexVoucher
             </a>
           </div>
@@ -56,24 +56,24 @@ const Navbar = {
           <div class="navbar-actions">
             <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Ganti tema" title="Toggle tema"><span class="theme-toggle-knob"></span></button>
 
-            <a href="/dexvoucher/pages/user/cart.html" class="navbar-cart" aria-label="Keranjang belanja">
-              <img class="icon-img" src="/dexvoucher/assets/images/icons/checkout.png" alt="" style="width:20px;height:20px">
+            <a href="/pages/user/cart.html" class="navbar-cart" aria-label="Keranjang belanja">
+              <img class="icon-img" src="/assets/images/icons/checkout.png" alt="" style="width:20px;height:20px">
               <span class="cart-badge" id="cart-badge" style="display:none">0</span>
             </a>
 
             ${isLoggedIn ? `
               <div class="navbar-user" id="navbar-user">
-                <img src="${session.avatar || '/dexvoucher/assets/images/avatars/default.svg'}" alt="${session.name}" class="navbar-avatar" id="user-avatar" onerror="this.src='/dexvoucher/assets/images/avatars/default.svg'">
+                <img src="${session.avatar || '/assets/images/avatars/default.svg'}" alt="${session.name}" class="navbar-avatar" id="user-avatar" onerror="this.src='/assets/images/avatars/default.svg'">
                 <div class="navbar-dropdown" id="user-dropdown">
-                  <a href="/dexvoucher/pages/user/profile.html"><img class="icon-img" src="/dexvoucher/assets/images/icons/Profil.png" alt="" style="width:16px;height:16px"> Profil</a>
-                  <a href="/dexvoucher/pages/user/history.html"><img class="icon-img" src="/dexvoucher/assets/images/icons/transaction.png" alt="" style="width:16px;height:16px"> Riwayat</a>
-                  <a href="/dexvoucher/pages/user/settings.html"><img class="icon-img" src="/dexvoucher/assets/images/icons/setting.png" alt="" style="width:16px;height:16px"> Pengaturan</a>
+                  <a href="/pages/user/profile.html"><img class="icon-img" src="/assets/images/icons/Profil.png" alt="" style="width:16px;height:16px"> Profil</a>
+                  <a href="/pages/user/history.html"><img class="icon-img" src="/assets/images/icons/transaction.png" alt="" style="width:16px;height:16px"> Riwayat</a>
+                  <a href="/pages/user/settings.html"><img class="icon-img" src="/assets/images/icons/setting.png" alt="" style="width:16px;height:16px"> Pengaturan</a>
                   <div class="divider"></div>
                   <button id="logout-btn" type="button">🚪 Logout</button>
                 </div>
               </div>
             ` : `
-              <a href="/dexvoucher/pages/user/login.html" class="btn btn-primary btn-sm">Masuk</a>
+              <a href="/pages/user/login.html" class="btn btn-primary btn-sm">Masuk</a>
             `}
           </div>
         </div>

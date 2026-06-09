@@ -8,7 +8,7 @@ const AdminSidebar = {
     { label: 'Dashboard', icon: '📊', href: 'dashboard-admin.html' },
     { label: 'Produk', icon: '📦', href: 'manage-products.html' },
     { label: 'Pengguna', icon: '👥', href: 'manage-users.html' },
-    { label: 'Transaksi', icon: '<img class="icon-img" src="/dexvoucher/assets/images/icons/money-bag_1653705.png" alt="" style="width:16px;height:16px">', href: 'manage-transactions.html' },
+    { label: 'Transaksi', icon: '<img class="icon-img" src="/assets/images/icons/money-bag_1653705.png" alt="" style="width:16px;height:16px">', href: 'manage-transactions.html' },
     { label: 'Promo', icon: '🏷️', href: 'manage-promo.html' },
     { label: 'Laporan', icon: '📈', href: 'reports.html' },
     { label: 'Pengaturan', icon: '⚙️', href: 'settings-admin.html' }
@@ -25,7 +25,7 @@ const AdminSidebar = {
     container.innerHTML = `
       <aside class="sidebar" id="admin-sidebar">
         <div class="sidebar-header">
-          <img src="/dexvoucher/assets/images/logo/logo.svg" alt="DexVoucher" onerror="this.style.display='none'" style="width:32px;height:32px">
+          <img src="/assets/images/logo/logo.svg" alt="DexVoucher" onerror="this.style.display='none'" style="width:32px;height:32px">
           <span>DexVoucher</span>
         </div>
         <nav class="sidebar-menu">
@@ -38,7 +38,7 @@ const AdminSidebar = {
         </nav>
         <div class="sidebar-footer">
           <div class="admin-info">
-            <img src="${session?.avatar || '/dexvoucher/assets/images/avatars/default.svg'}" alt="" onerror="this.src='/dexvoucher/assets/images/avatars/default.svg'">
+            <img src="${session?.avatar || '/assets/images/avatars/default.svg'}" alt="" onerror="this.src='/assets/images/avatars/default.svg'">
             <div>
               <div class="name">${session?.name || 'Admin'}</div>
               <div class="role">Admin</div>
@@ -57,7 +57,7 @@ const AdminSidebar = {
           <div class="flex items-center gap-md">
             <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Ganti tema" title="Toggle tema"><span class="theme-toggle-knob"></span></button>
             <span style="font-size:0.85rem;color:var(--text-secondary)">${session?.name || 'Admin'}</span>
-            <img src="${session?.avatar || '/dexvoucher/assets/images/avatars/default.svg'}" alt="" style="width:32px;height:32px;border-radius:50%;object-fit:cover" onerror="this.src='/dexvoucher/assets/images/avatars/default.svg'">
+            <img src="${session?.avatar || '/assets/images/avatars/default.svg'}" alt="" style="width:32px;height:32px;border-radius:50%;object-fit:cover" onerror="this.src='/assets/images/avatars/default.svg'">
           </div>
         </header>
         <main class="admin-content" id="admin-content">
