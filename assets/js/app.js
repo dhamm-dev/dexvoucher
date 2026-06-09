@@ -21,7 +21,7 @@ function showToast(message, type) {
   toast.className = `toast toast-${type}`;
   toast.setAttribute('role', 'alert');
   toast.innerHTML = `
-    <span class="toast-icon"><img class="icon-img" src="/assets/images/icons/${iconMap[type] || 'sukses.png'}" alt="" style="width:20px;height:20px"></span>
+    <span class="toast-icon"><img class="icon-img" src="${ROOT}/assets/images/icons/${iconMap[type] || 'sukses.png'}" alt="" style="width:20px;height:20px"></span>
     <span>${message}</span>
     <button class="toast-close" type="button" aria-label="Tutup">&times;</button>
   `;

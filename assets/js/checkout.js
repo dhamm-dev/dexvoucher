@@ -6,13 +6,13 @@
 const Checkout = {
   /** Daftar metode pembayaran */
   PAYMENT_METHODS: [
-    { id: 'transfer_bca', name: 'Transfer BCA', icon: '<img class="icon-img" src="/assets/images/icons/bank.png" alt="" style="width:20px;height:20px">' },
-    { id: 'transfer_mandiri', name: 'Transfer Mandiri', icon: '<img class="icon-img" src="/assets/images/icons/bank.png" alt="" style="width:20px;height:20px">' },
-    { id: 'transfer_bri', name: 'Transfer BRI', icon: '<img class="icon-img" src="/assets/images/icons/bank.png" alt="" style="width:20px;height:20px">' },
+    { id: 'transfer_bca', name: 'Transfer BCA', icon: '<img class="icon-img" src="' + ROOT + '/assets/images/icons/bank.png" alt="" style="width:20px;height:20px">' },
+    { id: 'transfer_mandiri', name: 'Transfer Mandiri', icon: '<img class="icon-img" src="' + ROOT + '/assets/images/icons/bank.png" alt="" style="width:20px;height:20px">' },
+    { id: 'transfer_bri', name: 'Transfer BRI', icon: '<img class="icon-img" src="' + ROOT + '/assets/images/icons/bank.png" alt="" style="width:20px;height:20px">' },
     { id: 'qris', name: 'QRIS', icon: '📱' },
-    { id: 'gopay', name: 'GoPay', icon: '<img class="icon-img" src="/assets/images/icons/gopay.png" alt="" style="width:20px;height:20px">' },
-    { id: 'dana', name: 'DANA', icon: '<img class="icon-img" src="/assets/images/icons/Dana.jpg" alt="" style="width:20px;height:20px">' },
-    { id: 'ovo', name: 'OVO', icon: '<img class="icon-img" src="/assets/images/icons/Ovo.png" alt="" style="width:20px;height:20px">' }
+    { id: 'gopay', name: 'GoPay', icon: '<img class="icon-img" src="' + ROOT + '/assets/images/icons/gopay.png" alt="" style="width:20px;height:20px">' },
+    { id: 'dana', name: 'DANA', icon: '<img class="icon-img" src="' + ROOT + '/assets/images/icons/Dana.jpg" alt="" style="width:20px;height:20px">' },
+    { id: 'ovo', name: 'OVO', icon: '<img class="icon-img" src="' + ROOT + '/assets/images/icons/Ovo.png" alt="" style="width:20px;height:20px">' }
   ],
 
   /**

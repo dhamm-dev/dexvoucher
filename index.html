@@ -16,7 +16,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="DexVoucher">
-  <link rel="manifest" href="/manifest.json">
+  <link rel="manifest" href="manifest.json">
 
   <link rel="stylesheet" href="assets/css/main.css">
   <style>
@@ -383,31 +383,31 @@
         </div>
         <div class="footer-column">
           <h4>Game</h4>
-          <a href="/pages/games/free-fire.html">Free Fire</a>
-          <a href="/pages/games/mobile-legends.html">Mobile Legends</a>
-          <a href="/pages/games/valorant.html">Valorant</a>
-          <a href="/pages/games/pubg-mobile.html">PUBG Mobile</a>
-          <a href="/pages/games/aov.html">AOV</a>
-          <a href="/pages/games/genshin-impact.html">Genshin Impact</a>
-          <a href="/pages/games/honkai-star-rail.html">Honkai Star Rail</a>
-          <a href="/pages/games/clash-of-clans.html">Clash of Clans</a>
-          <a href="/pages/games/roblox.html">Roblox</a>
-          <a href="/pages/games/codm.html">COD Mobile</a>
-          <a href="/pages/games/efootball.html">eFootball</a>
-          <a href="/pages/games/delta-force.html">Delta Force</a>
+          <a href="pages/games/free-fire.html">Free Fire</a>
+          <a href="pages/games/mobile-legends.html">Mobile Legends</a>
+          <a href="pages/games/valorant.html">Valorant</a>
+          <a href="pages/games/pubg-mobile.html">PUBG Mobile</a>
+          <a href="pages/games/aov.html">AOV</a>
+          <a href="pages/games/genshin-impact.html">Genshin Impact</a>
+          <a href="pages/games/honkai-star-rail.html">Honkai Star Rail</a>
+          <a href="pages/games/clash-of-clans.html">Clash of Clans</a>
+          <a href="pages/games/roblox.html">Roblox</a>
+          <a href="pages/games/codm.html">COD Mobile</a>
+          <a href="pages/games/efootball.html">eFootball</a>
+          <a href="pages/games/delta-force.html">Delta Force</a>
         </div>
         <div class="footer-column">
           <h4>Halaman</h4>
-          <a href="/pages/user/about.html">Tentang Kami</a>
-          <a href="/pages/user/history.html">Riwayat</a>
-          <a href="/pages/user/cart.html">Keranjang</a>
-          <a href="/pages/user/settings.html">Pengaturan</a>
+          <a href="pages/user/about.html">Tentang Kami</a>
+          <a href="pages/user/history.html">Riwayat</a>
+          <a href="pages/user/cart.html">Keranjang</a>
+          <a href="pages/user/settings.html">Pengaturan</a>
         </div>
         <div class="footer-column">
           <h4>Kontak</h4>
           <a href="mailto:support@dexvoucher.com"><img class="icon-img" src="assets/images/icons/communication.png" alt="" style="width:16px;height:16px;margin-right:6px"> support@dexvoucher.com</a>
           <a href="https://wa.me/6281234567890" target="_blank">WhatsApp</a>
-          <a href="/pages/user/about.html#faq">FAQ</a>
+          <a href="pages/user/about.html#faq">FAQ</a>
         </div>
       </div>
       <div class="footer-bottom">
@@ -483,7 +483,7 @@
           { id: 'delta-force', name: 'Delta Force', color: '#2D5A27', icon: 'DF', logo: 'DeltaForce.png' }
         ];
         grid.innerHTML = games.map(g => `
-          <div class="game-card" onclick="window.location.href='/pages/games/${g.id}.html'">
+            <div class="game-card" onclick="window.location.href=ROOT+'/pages/games/${g.id}.html'">
             <div class="game-icon" style="background:${g.color}"><img src="assets/images/logo/${g.logo}" alt="${g.name}" style="width:100%;height:100%;object-fit:contain;border-radius:inherit"></div>
             <h3>${g.name}</h3>
             <span class="btn btn-sm btn-outline">Top Up</span>

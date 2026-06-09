@@ -122,7 +122,7 @@ const Auth = {
    */
   logout() {
     Storage.clearSession();
-    window.location.href = '/pages/user/login.html';
+    window.location.href = ROOT + '/pages/user/login.html';
   },
 
   /**
@@ -157,7 +157,7 @@ const Auth = {
   requireAuth() {
     if (!Auth.isLoggedIn()) {
       const currentPage = window.location.pathname;
-      window.location.href = '/pages/user/login.html?redirect=' + encodeURIComponent(currentPage);
+      window.location.href = ROOT + '/pages/user/login.html?redirect=' + encodeURIComponent(currentPage);
     }
   },
 
@@ -167,11 +167,11 @@ const Auth = {
    */
   requireAdmin() {
     if (!Auth.isLoggedIn()) {
-      window.location.href = '/pages/admin/login-admin.html';
+      window.location.href = ROOT + '/pages/admin/login-admin.html';
       return;
     }
     if (!Auth.isAdmin()) {
-      window.location.href = '/index.html';
+      window.location.href = ROOT + '/index.html';
     }
   },
 

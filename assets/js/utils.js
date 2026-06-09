@@ -3,6 +3,21 @@
  * @author DexVoucher Team
  */
 
+window.ROOT = (function() {
+  var scripts = document.getElementsByTagName('script');
+  for (var i = 0; i < scripts.length; i++) {
+    var src = scripts[i].src;
+    if (src && src.indexOf('/assets/js/') !== -1) {
+      try {
+        var url = new URL(src);
+        var idx = url.pathname.indexOf('/assets/js/');
+        return idx > 0 ? url.pathname.substring(0, idx) : '';
+      } catch(e) {}
+    }
+  }
+  return '';
+})();
+
 /**
  * Format angka ke format Rupiah
  * @param {number} number - Angka yang akan diformat
