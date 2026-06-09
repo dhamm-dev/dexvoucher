@@ -19,8 +19,13 @@
     grid-template-columns: repeat(2, 1fr);
   }
 
+  /* Pastikan unggul-card tidak overflow */
+  .unggul-card {
+    min-width: 0;
+  }
+
   #game-grid.grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .footer-grid {
@@ -148,7 +153,7 @@
   }
 
   #game-grid.grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
   }
 
   #product-grid.grid {
@@ -159,12 +164,18 @@
     padding: 16px 10px;
   }
   .game-card .game-icon {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
   }
   .game-card h3 {
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     margin-bottom: 8px;
+  }
+  .game-card .btn {
+    width: 100%;
+    padding: 6px 8px;
+    font-size: 0.75rem;
+    justify-content: center;
   }
 
   .product-card {
@@ -272,9 +283,9 @@
   .navbar-actions {
     gap: 10px;
   }
-  .btn {
-    width: 100%;
-    justify-content: center;
+  /* Hanya tombol di navbar actions yang full-width di mobile */
+  .navbar-actions .btn {
+    width: auto;
   }
 
   .admin-content {
