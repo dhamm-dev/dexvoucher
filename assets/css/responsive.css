@@ -140,9 +140,11 @@
   }
 
   .grid-2,
-  .grid-3,
-  .grid-4 {
+  .grid-3 {
     grid-template-columns: 1fr;
+  }
+  .grid-4 {
+    grid-template-columns: repeat(2, 1fr);
   }
 
   #game-grid.grid {
@@ -182,6 +184,10 @@
     font-size: 0.7rem;
     white-space: normal;
     padding: 4px 6px;
+  }
+  .product-card .product-badge {
+    font-size: 8px;
+    padding: 1px 4px;
   }
 
   .hero {
